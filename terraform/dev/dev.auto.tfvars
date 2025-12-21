@@ -7,24 +7,6 @@ common_tags = {
   Environment ="posistrength-dev"
 }
 
-#aws_account_id  = "200901485389"
-#github_repository     = ["Zampfi/pantheon", "Zampfi/infrastructure", "Zampfi/application-platform", "Zampfi/data_platform"]  
-#role_name             = "OIDCRole"
-#terraform_oidc_policy = "AdministratorAccess"
-#gitlab_projects = [
-#  "mygroup/myproject",
-#  "anothergroup/anotherproject"
-#]
-
-########################################################################################################
-
-#bastion = {
-#  instance_type       = "t2.medium"
-#  bastion_volume_size = "15"
-#  bastion_volume_type = "gp3"
-#}
-
-########################################################################################################
 
 
 ########################################################################################################
