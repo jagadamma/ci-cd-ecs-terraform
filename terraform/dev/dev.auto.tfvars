@@ -112,63 +112,63 @@ vpc_flow_logs = {
 # ------------------------------
 # ACM Single SAN Certificate
 # ------------------------------
-multi_domain_cert = {
-  domain_name ="posistrength.com"
+# multi_domain_cert = {
+#   domain_name ="posistrength.com"
 
-  subject_alternative_names = [
-    "ap.posistrength.com",
-    "ap.posistrength.com"
-  ]
-}
-validation_method = "DNS"
+#   subject_alternative_names = [
+#     "ap.posistrength.com",
+#     "ap.posistrength.com"
+#   ]
+# }
+# validation_method = "DNS"
 
 
-hosted_zones = {
-"posistrength.com" = {
-    comment       = "Production domain"
-    force_destroy = false
-    private_zone  = false
-  }
+# hosted_zones = {
+# "posistrength.com" = {
+#     comment       = "Production domain"
+#     force_destroy = false
+#     private_zone  = false
+#   }
 
-  "alekya.com" = {
-    comment       = "Internal"
-    force_destroy = true
-    private_zone  = false
-  }
-}
+#   "alekya.com" = {
+#     comment       = "Internal"
+#     force_destroy = true
+#     private_zone  = false
+#   }
+# }
 
-records = {
-  app-a-recor-posistrength = {
-    zone_name ="posistrength.com"
-    name      = "ap.posistrength.com"
-    type      = "A"
-    ttl       = 300
-    records   = ["10.0.0.10"]
-  }
+# records = {
+#   app-a-recor-posistrength = {
+#     zone_name ="posistrength.com"
+#     name      = "ap.posistrength.com"
+#     type      = "A"
+#     ttl       = 300
+#     records   = ["10.0.0.10"]
+#   }
 
-  api-cnam-posistrength = {
-    zone_name ="posistrength.com"
-    name      = "ap.posistrength.com"
-    type      = "CNAME"
-    ttl       = 300
-    records   = ["ap.posistrength.com"]
-  }
+#   api-cnam-posistrength = {
+#     zone_name ="posistrength.com"
+#     name      = "ap.posistrength.com"
+#     type      = "CNAME"
+#     ttl       = 300
+#     records   = ["ap.posistrength.com"]
+#   }
 
-  app-a-record-internal = {
-    zone_name = "alekya.com"
-    name      = "app.alekya.com"
-    type      = "A"
-    ttl       = 300
-    records   = ["10.0.0.10"]
-  }
+#   app-a-record-internal = {
+#     zone_name = "alekya.com"
+#     name      = "app.alekya.com"
+#     type      = "A"
+#     ttl       = 300
+#     records   = ["10.0.0.10"]
+#   }
 
-  api-cname-internal = {
-    zone_name = "alekya.com"
-    name      = "api.alekya.com"
-    type      = "CNAME"
-    ttl       = 300
-    records   = ["app.ialekya.com"]
-  }
+#   api-cname-internal = {
+#     zone_name = "alekya.com"
+#     name      = "api.alekya.com"
+#     type      = "CNAME"
+#     ttl       = 300
+#     records   = ["app.ialekya.com"]
+#   }
 
   # alb-alias = {
   #   zone_name ="posistrength.com"
@@ -182,15 +182,15 @@ records = {
   #     evaluate_target_health = true
   #   }
   # }
-}
+#}
 
 ########################################################################################################
 
-domains = [
-  "ap.posistrength.com",
-  "ap.posistrength.com",
-"posistrength.com",
-]
+# domains = [
+#   "ap.posistrength.com",
+#   "ap.posistrength.com",
+# "posistrength.com",
+# ]
 
 #rds = {
 #  mysql = {
@@ -223,63 +223,63 @@ domains = [
 #}
 
 
-sns = {
-"posistrength-dev-topic" = {
-    display_name ="posistrength-dev-topic"
+# sns = {
+# "posistrength-dev-topic" = {
+#     display_name ="posistrength-dev-topic"
 
-    subscriptions = [
-      {
-        protocol = "email"
-        endpoint = "orders@company.com"
-      }
-    ]
-  }
-}
+#     subscriptions = [
+#       {
+#         protocol = "email"
+#         endpoint = "orders@company.com"
+#       }
+#     ]
+#   }
+# }
 
-secrets_list = [
-  {
-    name        = "api-token"
-    description = "API token for service"
-  },
-  {
-    name        = "db-password"
-    description = "Database password"
-  }
-]
+# secrets_list = [
+#   {
+#     name        = "api-token"
+#     description = "API token for service"
+#   },
+#   {
+#     name        = "db-password"
+#     description = "Database password"
+#   }
+# ]
 
-sqs_queues = {
-  orders_queue = {
-    name                       = "orders-queu-posistrength-dev"
-    max_message_size           = 262144
-    message_retention_seconds  = 345600
-    visibility_timeout_seconds = 30
-    delay_seconds              = 0
-    receive_wait_time_seconds  = 10
-    sqs_managed_sse_enabled    = true
-  }
+# sqs_queues = {
+#   orders_queue = {
+#     name                       = "orders-queu-posistrength-dev"
+#     max_message_size           = 262144
+#     message_retention_seconds  = 345600
+#     visibility_timeout_seconds = 30
+#     delay_seconds              = 0
+#     receive_wait_time_seconds  = 10
+#     sqs_managed_sse_enabled    = true
+#   }
 
-  payments_queue = {
-    name                       = "payments-queu-posistrength-dev"
-    max_message_size           = 262144
-    message_retention_seconds  = 86400
-    visibility_timeout_seconds = 45
-    delay_seconds              = 5
-    receive_wait_time_seconds  = 10
-    sqs_managed_sse_enabled    = true
-  }
-}
+#   payments_queue = {
+#     name                       = "payments-queu-posistrength-dev"
+#     max_message_size           = 262144
+#     message_retention_seconds  = 86400
+#     visibility_timeout_seconds = 45
+#     delay_seconds              = 5
+#     receive_wait_time_seconds  = 10
+#     sqs_managed_sse_enabled    = true
+#   }
+# }
 
-distributions = {
-  app1 = {
-    domain_name    = "skyclouds.live"
-    hosted_zone_id = "Z04470213W5YJ2PYTYHK"
-    origin_path    = "/static"
-    tags = {
-      Environment ="posistrength-dev"
-      App         = "app1"
-    }
-  }
-}
+# distributions = {
+#   app1 = {
+#     domain_name    = "skyclouds.live"
+#     hosted_zone_id = "Z04470213W5YJ2PYTYHK"
+#     origin_path    = "/static"
+#     tags = {
+#       Environment ="posistrength-dev"
+#       App         = "app1"
+#     }
+#   }
+# }
 
 
 ########################################################################################################
@@ -313,7 +313,7 @@ lifecycle_policy = {
   actionType   = "expire"
 }
 
-kms_key_alias = "alia/posistrength-dev-ecr-kms-key"
+# kms_key_alias = "alia/posistrength-dev-ecr-kms-key"
 
 ########################################################################################################
 
@@ -329,93 +329,93 @@ kms_key_alias = "alia/posistrength-dev-ecr-kms-key"
 
 #  assign_public_ip = false
 #}
-security_groups = {
-  alb = {
-    ingress = [
-      {
-        from_port   = 80
-        to_port     = 80
-        protocol    = "tcp"
-        cidr_blocks = ["0.0.0.0/0"]
-      }
-    ]
-    egress = [
-      {
-        from_port   = 0
-        to_port     = 0
-        protocol    = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-      }
-    ]
-  }
+# security_groups = {
+#   alb = {
+#     ingress = [
+#       {
+#         from_port   = 80
+#         to_port     = 80
+#         protocol    = "tcp"
+#         cidr_blocks = ["0.0.0.0/0"]
+#       }
+#     ]
+#     egress = [
+#       {
+#         from_port   = 0
+#         to_port     = 0
+#         protocol    = "-1"
+#         cidr_blocks = ["0.0.0.0/0"]
+#       }
+#     ]
+#   }
 
-  ecs = {
-    ingress = [
-      {
-        from_port       = 80
-        to_port         = 80
-        protocol        = "tcp"
-        security_groups = ["alb"] # reference ALB SG dynamically
-      }
-    ]
-    egress = [
-      {
-        from_port   = 0
-        to_port     = 0
-        protocol    = "-1"
-        cidr_blocks = ["0.0.0.0/0"]
-      }
-    ]
-  }
-}
+#   ecs = {
+#     ingress = [
+#       {
+#         from_port       = 80
+#         to_port         = 80
+#         protocol        = "tcp"
+#         security_groups = ["alb"] # reference ALB SG dynamically
+#       }
+#     ]
+#     egress = [
+#       {
+#         from_port   = 0
+#         to_port     = 0
+#         protocol    = "-1"
+#         cidr_blocks = ["0.0.0.0/0"]
+#       }
+#     ]
+#   }
+# }
 
-task_definition = {
-  app1 = {
+#task_definition = {
+#  app1 = {
 
-    image  = "132398229882.dkr.ecr-east-2.amazonaws.co/posistrength-dev-ecr"
-    port   = 80
-    cpu    = 256
-    memory = 512
-  }
-  app2 = {
-    image  = "132398229882.dkr.ecr-east-2.amazonaws.co/posistrength-dev-ecr1"
-    port   = 8080
-    cpu    = 256
-    memory = 512
-  }
-}
+#   image  = "132398229882.dkr.ecr-east-2.amazonaws.co/posistrength-dev-ecr"
+#    port   = 80
+#    cpu    = 256
+#    memory = 512
+# }
+#  app2 = {
+#    image  = "132398229882.dkr.ecr-east-2.amazonaws.co/posistrength-dev-ecr1"
+#    port   = 8080
+#    cpu    = 256
+#    memory = 512
+#  }
+#}
 
-cicd = {
-  pipeline_name   ="posistrength-dev-pipeline"
-  artifact_bucket ="posistrength-dev-codepipeline-artifacts"
+# cicd = {
+#   pipeline_name   ="posistrength-dev-pipeline"
+#   artifact_bucket ="posistrength-dev-codepipeline-artifacts"
 
-  github = {
-    owner          = "posistrength"
-    repo           = "nginx-dockerdile-deployment"
-    branch         = "master"
-    connection_arn = "arn:aws:codeconnections-east-2:132398229882:connection/01c78266-df87-4b67-9b03-352a1bb1a3fe"
-  }
+#   github = {
+#     owner          = "posistrength"
+#     repo           = "nginx-dockerdile-deployment"
+#     branch         = "master"
+#     connection_arn = "arn:aws:codeconnections-east-2:132398229882:connection/01c78266-df87-4b67-9b03-352a1bb1a3fe"
+#   }
 
-  codebuild = {
-    project_name ="posistrength-dev-codebuild"
-    image        = "aws/codebuild/standard:7.0"
-    compute_type = "BUILD_GENERAL1_SMALL"
-  }
+#   codebuild = {
+#     project_name ="posistrength-dev-codebuild"
+#     image        = "aws/codebuild/standard:7.0"
+#     compute_type = "BUILD_GENERAL1_SMALL"
+#   }
 
-  codedeploy = {
-    application_name ="posistrength-dev-ecs-app"
-    deployment_groups = {
-      app1 = { name ="posistrength-dev-app1-dg" }
-      app2 = { name ="posistrength-dev-app2-dg" }
-    }
-  }
-}
-artifact_bucket ="posistrength-dev-codepipeline-artifacts"
+#   codedeploy = {
+#     application_name ="posistrength-dev-ecs-app"
+#     deployment_groups = {
+#       app1 = { name ="posistrength-dev-app1-dg" }
+#       app2 = { name ="posistrength-dev-app2-dg" }
+#     }
+#   }
+# }
+# artifact_bucket ="posistrength-dev-codepipeline-artifacts"
 
-service_ecr_map = {
-  app1 ="posistrength-dev-ecr"
-  app2 ="posistrength-dev-ecr"
-}
+# service_ecr_map = {
+#   app1 ="posistrength-dev-ecr"
+#   app2 ="posistrength-dev-ecr"
+# }
 
 ########################################################################################################
 
