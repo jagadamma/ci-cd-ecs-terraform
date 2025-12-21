@@ -110,18 +110,19 @@ variable "nat_gateways" {
 # -----------------------------
 # ECS Inputs
 # -----------------------------
-variable "ecs" {
-  type = object({
-    container_image  = string
-    container_port   = number
-    task_cpu         = number
-    task_memory      = number
-    container_name   = string # NEW
-    assign_public_ip = bool   # NEW
-    desired_count    = number
-    alb_idle_timeout = number
-  })
-}
+#variable "ecs" {
+#  type = object({
+#    container_image  = string
+#    container_port   = number
+#    task_cpu         = number
+#    task_memory      = number
+#    container_name   = string # NEW
+#    assign_public_ip = bool   # NEW
+#    desired_count    = number
+#    alb_idle_timeout = number
+#  })
+#}
+
 variable "task_definition" {
   type = map(object({
     image  = string

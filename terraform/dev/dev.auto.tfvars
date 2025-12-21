@@ -307,7 +307,7 @@ ecr_repositories = [
 lifecycle_policy = {
   rulePriority = 1
   description  = "Keep only the last 10 images"
-  tagSta    = "any"
+  tagStatus    = "any"
   countType    = "imageCountMoreThan"
   countNumber  = 10
   actionType   = "expire"
@@ -317,18 +317,18 @@ kms_key_alias = "alia/posistrength-dev-ecr-kms-key"
 
 ########################################################################################################
 
-ecs = {
-  container_image = "132398229882.dkr.ecr-east-2.amazonaws.co/posistrength-dev-ecr:latest"
-  container_port  = 80
-  container_name  = "app1"
+#ecs = {
+#  container_image = "132398229882.dkr.ecr-east-2.amazonaws.co/posistrength-dev-ecr:latest"
+#  container_port  = 80
+#  container_name  = "app1"
 
-  task_cpu         = 256
-  task_memory      = 512
-  desired_count    = 1
-  alb_idle_timeout = 60
+# task_cpu         = 256
+#  task_memory      = 512
+#  desired_count    = 1
+#  alb_idle_timeout = 60
 
-  assign_public_ip = false
-}
+#  assign_public_ip = false
+#}
 security_groups = {
   alb = {
     ingress = [
