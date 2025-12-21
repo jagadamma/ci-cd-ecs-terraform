@@ -73,6 +73,105 @@
 #     aws_security_group.ecs_sg
 #   ]
 # }
+#   vpc_id       = module.vpc.vpc_ids[0]
+#   hosted_zones = var.hosted_zones
+#   records      = var.records
+#   common_tags  = var.common_tags
+# }
+
+# module "secrets" {
+#   source       = "../modules/secrets"
+#   secrets_list = var.secrets_list
+#   common_tags  = var.common_tags
+# }
+
+# module "sns" {
+#   source      = "../modules/sns"
+#   sns         = var.sns
+#   common_tags = var.common_tags
+# }
+
+# module "sqs" {
+#   source      = "../modules/sqs"
+#   sqs_queues  = var.sqs_queues
+#   common_tags = var.common_tags
+# }
+
+# module "codebuild" {
+#   for_each     = var.task_definition
+#   source       = "../modules/codebuild"
+#   project_name = var.cicd.codebuild.project_name
+
+#   name_prefix  = var.name_prefix
+#   environment  = var.environment
+#   region       = var.region
+#   service_name = each.key
+#   service_role = module.iam.codebuild_role_arn
+#   ecr_repo_url = module.ecr.repo_urls[var.service_ecr_map[each.key]]
+
+
+#   tags = var.common_tags
+# }
+
+# resource "aws_codedeploy_app" "ecs" {
+#   name             = "${var.name_prefix}-${var.environment}-ecs-app"
+#   compute_platform = "ECS"
+# }
+
+
+# module "codedeploy" {
+#   for_each = var.task_definition
+
+#   source              = "../modules/codedeploy"
+#   codedeploy_app_name = aws_codedeploy_app.ecs.name
+#   name_prefix         = var.name_prefix
+#   environment         = var.environment
+
+#   service_role_arn = module.iam.codedeploy_role_arn
+
+
+#   ecs_cluster_name = module.ecs.cluster_name
+#   ecs_service_name = module.ecs.service_names[each.key]
+
+#   alb_listener_arn = module.ecs.alb_listener_arn
+#   blue_tg_name     = module.ecs.blue_tg_names[each.key]
+#   green_tg_name    = module.ecs.green_tg_names[each.key]
+
+
+# }
+
+# module "codepipeline" {
+#   for_each = var.task_definition
+#   source   = "../modules/codepipeline"
+
+#   name_prefix = var.name_prefix
+#   environment = var.environment
+
+#   #  pipeline_name   = var.cicd.pipeline_name
+#   pipeline_name = "${var.cicd.pipeline_name}-${each.key}"
+
+#   artifact_bucket = var.cicd.artifact_bucket
+
+#   role_arn = module.iam.codepipeline_role_arn
+
+#   github_owner            = var.cicd.github.owner
+#   github_repo             = var.cicd.github.repo
+#   github_branch           = var.cicd.github.branch
+#   codestar_connection_arn = var.cicd.github.connection_arn
+
+#   #  github_token  = var.cicd.github.token
+
+#   codebuild_project_name = module.codebuild[each.key].project_name
+#   codedeploy_app_name    = module.codedeploy[each.key].app_name
+#   codedeploy_dg_name     = module.codedeploy[each.key].dg_name
+#   taskdef_template_path  = "taskdef-${each.key}.json"
+#   appspec_template_path  = "appspec-${each.key}.yaml"
+
+#   depends_on = [
+#     module.s3buckets
+#   ]
+# }
+
 
 
 # #############################
@@ -185,101 +284,3 @@
 
 # module "route53" {
 #   source       = "../modules/route53"
-#   vpc_id       = module.vpc.vpc_ids[0]
-#   hosted_zones = var.hosted_zones
-#   records      = var.records
-#   common_tags  = var.common_tags
-# }
-
-# module "secrets" {
-#   source       = "../modules/secrets"
-#   secrets_list = var.secrets_list
-#   common_tags  = var.common_tags
-# }
-
-# module "sns" {
-#   source      = "../modules/sns"
-#   sns         = var.sns
-#   common_tags = var.common_tags
-# }
-
-# module "sqs" {
-#   source      = "../modules/sqs"
-#   sqs_queues  = var.sqs_queues
-#   common_tags = var.common_tags
-# }
-
-# module "codebuild" {
-#   for_each     = var.task_definition
-#   source       = "../modules/codebuild"
-#   project_name = var.cicd.codebuild.project_name
-
-#   name_prefix  = var.name_prefix
-#   environment  = var.environment
-#   region       = var.region
-#   service_name = each.key
-#   service_role = module.iam.codebuild_role_arn
-#   ecr_repo_url = module.ecr.repo_urls[var.service_ecr_map[each.key]]
-
-
-#   tags = var.common_tags
-# }
-
-# resource "aws_codedeploy_app" "ecs" {
-#   name             = "${var.name_prefix}-${var.environment}-ecs-app"
-#   compute_platform = "ECS"
-# }
-
-
-# module "codedeploy" {
-#   for_each = var.task_definition
-
-#   source              = "../modules/codedeploy"
-#   codedeploy_app_name = aws_codedeploy_app.ecs.name
-#   name_prefix         = var.name_prefix
-#   environment         = var.environment
-
-#   service_role_arn = module.iam.codedeploy_role_arn
-
-
-#   ecs_cluster_name = module.ecs.cluster_name
-#   ecs_service_name = module.ecs.service_names[each.key]
-
-#   alb_listener_arn = module.ecs.alb_listener_arn
-#   blue_tg_name     = module.ecs.blue_tg_names[each.key]
-#   green_tg_name    = module.ecs.green_tg_names[each.key]
-
-
-# }
-
-# module "codepipeline" {
-#   for_each = var.task_definition
-#   source   = "../modules/codepipeline"
-
-#   name_prefix = var.name_prefix
-#   environment = var.environment
-
-#   #  pipeline_name   = var.cicd.pipeline_name
-#   pipeline_name = "${var.cicd.pipeline_name}-${each.key}"
-
-#   artifact_bucket = var.cicd.artifact_bucket
-
-#   role_arn = module.iam.codepipeline_role_arn
-
-#   github_owner            = var.cicd.github.owner
-#   github_repo             = var.cicd.github.repo
-#   github_branch           = var.cicd.github.branch
-#   codestar_connection_arn = var.cicd.github.connection_arn
-
-#   #  github_token  = var.cicd.github.token
-
-#   codebuild_project_name = module.codebuild[each.key].project_name
-#   codedeploy_app_name    = module.codedeploy[each.key].app_name
-#   codedeploy_dg_name     = module.codedeploy[each.key].dg_name
-#   taskdef_template_path  = "taskdef-${each.key}.json"
-#   appspec_template_path  = "appspec-${each.key}.yaml"
-
-#   depends_on = [
-#     module.s3buckets
-#   ]
-# }
