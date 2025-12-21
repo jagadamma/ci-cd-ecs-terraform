@@ -19,7 +19,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: dev
+        working-directory: terraform/dev
 
     steps:
       - name: Checkout repository
