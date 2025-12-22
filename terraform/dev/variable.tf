@@ -267,17 +267,17 @@ variable "nat_gateways" {
 # }
 
 
- variable "lifecycle_policy" {
-   description = "ECR lifecycle policy"
-   type = object({
-     rulePriority = number
-     description  = string
-     tagStatus    = string
-     countType    = string
-     countNumber  = number
-     actionType   = string
-   })
- }
+#  variable "lifecycle_policy" {
+#    description = "ECR lifecycle policy"
+#    type = object({
+#      rulePriority = number
+#      description  = string
+#      tagStatus    = string
+#      countType    = string
+#      countNumber  = number
+#      actionType   = string
+#    })
+#  }
 
 #variable "kms_key_alias" {
 #  type = string
