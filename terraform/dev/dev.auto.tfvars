@@ -217,7 +217,7 @@ rds = {
    storage_encrypted                     = true
    storage_type                          = "gp3"
    deletion_protection                   = true
-   db_name                               = "mysql"
+   #db_name                               = "mysql"
    db_username                           = "admin"
  }
 }
