@@ -296,7 +296,7 @@ variable "rds" {
     allocated_storage                     = number
     instance_class                        = string
     db_username                           = string
-    db_password                           = string
+   # db_password                           = string
     parameter_group_name                  = string
     parameter_group_family                = string
     backup_retention_period               = number

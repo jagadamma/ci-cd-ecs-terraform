@@ -29,34 +29,35 @@ resource "aws_db_parameter_group" "rds_pg" {
   )
 }
 
-resource "aws_secretsmanager_secret" "rds_secret" {
-  for_each = var.rds
-  name     = "${each.value.db_identifier}-secrets"
-}
+# resource "aws_secretsmanager_secret" "rds_secret" {
+#   for_each = var.rds
+#   name     = "${each.value.db_identifier}-secrets"
+# }
 
-resource "aws_secretsmanager_secret_version" "rds_secret_version" {
-  for_each = var.rds
+# resource "aws_secretsmanager_secret_version" "rds_secret_version" {
+#   for_each = var.rds
 
-  secret_id = aws_secretsmanager_secret.rds_secret[each.key].id
+#   secret_id = aws_secretsmanager_secret.rds_secret[each.key].id
 
-  secret_string = jsonencode({
-    password = each.value.db_password
-  })
-}
+#   secret_string = jsonencode({
+#     password = each.value.db_password
+#   })
+# }
+
+ data "aws_caller_identity" "current" {}
 
 
+# data "aws_secretsmanager_secret" "rds_secrets" {
+#   for_each = var.rds
+#   name     = "${each.value.db_identifier}-secrets"
 
-data "aws_secretsmanager_secret" "rds_secrets" {
-  for_each = var.rds
-  name     = "${each.value.db_identifier}-secrets"
+#  # depends_on = [aws_secretsmanager_secret.rds_secret]
+# }
 
-  depends_on = [aws_secretsmanager_secret.rds_secret]
-}
-
-data "aws_secretsmanager_secret_version" "rds_secrets_version" {
-  for_each  = var.rds
-  secret_id = data.aws_secretsmanager_secret.rds_secrets[each.key].id
-}  
+# data "aws_secretsmanager_secret_version" "rds_secrets_version" {
+#   for_each  = var.rds
+#   secret_id = data.aws_secretsmanager_secret.rds_secrets[each.key].id
+# }  
 
 ### RDS ###
 resource "aws_db_instance" "rds" {
@@ -70,9 +71,8 @@ resource "aws_db_instance" "rds" {
   db_name              = each.value.db_name
   username             = each.value.db_username
   password = jsondecode(
-  data.aws_secretsmanager_secret_version.rds_secrets_version[each.key].secret_string
-  ).password
-
+  aws_secretsmanager_secret_version.rds_secret_version[each.key].secret_string
+).password
 
   auto_minor_version_upgrade = each.value.auto_minor_version_upgrade
   backup_retention_period    = each.value.backup_retention_period
