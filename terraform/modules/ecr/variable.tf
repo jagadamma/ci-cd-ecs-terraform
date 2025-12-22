@@ -1,10 +1,16 @@
 variable "ecr_repositories" {
+  type = list(object({
+    name              = string
+    enable_scanning   = bool
+    tag_mutability    = string
+    enable_encryption = bool
+    enable_lifecycle  = bool
+  }))
 }
 
 variable "kms_key_alias" {
   description = "Alias for the KMS key used to encrypt ECR repositories"
   type        = string
-  default     = "alias/harshi-ecr-kms-key"
 }
 
 variable "lifecycle_policy" {
@@ -22,4 +28,9 @@ variable "lifecycle_policy" {
 variable "common_tags" {
   type        = map(string)
   default     = {}
+}
+
+variable "name_prefix" {
+  description = "Name prefix for resources"
+  type        = string
 }

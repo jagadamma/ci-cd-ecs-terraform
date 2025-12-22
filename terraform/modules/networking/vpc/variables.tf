@@ -46,3 +46,7 @@ variable "common_tags" {
   type        = map(string)
   default     = {}
 }
+variable "igw_name" {
+  description = "Internet Gateway name"
+  type        = string
+}

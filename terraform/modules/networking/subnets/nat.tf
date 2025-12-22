@@ -1,7 +1,11 @@
 resource "aws_eip" "nat_eip" {
+  domain = "vpc"
+
   tags = merge(
     var.common_tags,
-    { Name = lookup(var.nat_gateways[0], "name") }
+    {
+      Name = "${var.name_prefix}-eip"
+    }
   )
 }
 

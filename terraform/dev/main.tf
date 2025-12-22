@@ -16,6 +16,7 @@
    vpcs          = var.vpcs
    vpc_flow_logs = var.vpc_flow_logs
    common_tags   = var.common_tags
+   igw_name = var.igw_name
  }
 
  module "subnet" {
@@ -42,6 +43,8 @@
    ecr_repositories = var.ecr_repositories
    lifecycle_policy = var.lifecycle_policy
    common_tags      = var.common_tags
+   name_prefix      = var.name_prefix 
+   kms_key_alias    = var.kms_key_alias
  }
 
 # module "ecs" {

@@ -52,6 +52,11 @@ variable "vpcs" {
   type = list(any)
 }
 
+variable "igw_name" {
+  description = "Internet Gateway name"
+  type        = string
+}
+
 variable "vpc_flow_logs" {
   type = any
 }
@@ -164,6 +169,11 @@ variable "ecr_repositories" {
     tag_mutability    = string
     enable_encryption = bool
   }))
+}
+
+variable "kms_key_alias" {
+  type        = string
+  description = "KMS alias for ECR encryption"
 }
 
 # variable "service_ecr_map" {

@@ -1,10 +1,10 @@
-environment ="posistrength-dev"
+environment ="dev"
 region      = "ap-south-1"
 name_prefix ="posistrength-dev"
 
 common_tags = {
   Terraformed = "True"
-  Environment ="posistrength-dev"
+  Environment ="dev"
 }
 
 ########################################################################################################
@@ -31,16 +31,17 @@ public_subnets = [
 private_subnets = [
   {
     name              ="posistrength-dev-private-subnet-1a"
-    cidr              = "10.0.3.0/24"
+    cidr              = "10.0.11.0/24"
     availability_zone = "ap-south-1a"
   },
   {
     name              ="posistrength-dev-private-subnet-1b"
-    cidr              = "10.0.4.0/24"
+    cidr              = "10.0.12.0/24"
     availability_zone = "ap-south-1b"
 
   },
 ]
+igw_name = "posistrength-dev-igw"
 
 #db_subnets = [
 #  {
@@ -283,10 +284,11 @@ vpc_flow_logs = {
 
 
 ########################################################################################################
+kms_key_alias = "posistrength-dev-ecr-kms-key"
 
 ecr_repositories = [
   {
-    name              ="posistrength-dev-ecr"
+    name              ="posistrength-dev-webposistrength-ecr"
     enable_scanning   = true
     tag_mutability    = "MUTABLE"
     enable_encryption = true
@@ -310,7 +312,9 @@ lifecycle_policy = {
   actionType   = "expire"
 }
 
-# kms_key_alias = "alia/posistrength-dev-ecr-kms-key"
+
+
+
 
 ########################################################################################################
 

@@ -13,14 +13,17 @@ resource "aws_vpc" "vpc" {
 
 resource "aws_internet_gateway" "internet_gateway" {
   count  = length(var.vpcs)
-  vpc_id = aws_vpc.vpc.*.id[count.index]
-  tags = merge(
-    var.common_tags,    
-    { Name = lookup(var.vpcs[count.index], "name") },                               # Common tags from env
-    try(lookup(var.vpcs[count.index], "tags", {}), {}) # Optional per-VPC tags
-  )
+  vpc_id = aws_vpc.vpc[count.index].id
 
+  tags = merge(
+    var.common_tags,
+    {
+      Name = var.igw_name
+    },
+    try(lookup(var.vpcs[count.index], "tags", {}), {})
+  )
 }
+
 
 resource "aws_vpc_dhcp_options" "dhcp_options" {
   count               = length(var.vpcs)
