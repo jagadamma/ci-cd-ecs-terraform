@@ -38,14 +38,14 @@
  }
 
 
- module "ecr" {
-   source           = "../modules/ecr"
-   ecr_repositories = var.ecr_repositories
-   lifecycle_policy = var.lifecycle_policy
-   common_tags      = var.common_tags
-   name_prefix      = var.name_prefix 
-   kms_key_alias    = var.kms_key_alias
- }
+# module "ecr" {
+#   source           = "../modules/ecr"
+#   ecr_repositories = var.ecr_repositories
+#   lifecycle_policy = var.lifecycle_policy
+#   common_tags      = var.common_tags
+#   name_prefix      = var.name_prefix 
+#   kms_key_alias    = var.kms_key_alias
+# }
 
 # module "ecs" {
 #   source = "../modules/ecs"

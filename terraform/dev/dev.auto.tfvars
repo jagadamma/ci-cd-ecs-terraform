@@ -83,14 +83,14 @@ public_subnet_route_tables = [
   }
 ]
 
-db_subnet_route_tables = [
-  {
-    name ="posistrength-dev--db-rt"
-    tags = {
-      SubnetType = "db"
-    }
-  }
-]
+#db_subnet_route_tables = [
+#  {
+#    name ="posistrength-dev--db-rt"
+#    tags = {
+#      SubnetType = "db"
+#    }
+#  }
+#]
 
 nat_gateways = [
   {
@@ -284,16 +284,16 @@ vpc_flow_logs = {
 
 
 ########################################################################################################
-kms_key_alias = "posistrength-dev-ecr-kms-key"
+# kms_key_alias = "posistrength-dev-ecr-kms-key"
 
-ecr_repositories = [
-  {
-    name              ="posistrength-dev-webposistrength-ecr"
-    enable_scanning   = true
-    tag_mutability    = "MUTABLE"
-    enable_encryption = true
-    enable_lifecycle  = true
-  },
+# ecr_repositories = [
+#   {
+#     name              ="posistrength-dev-webposistrength-ecr"
+#     enable_scanning   = true
+#     tag_mutability    = "MUTABLE"
+#     enable_encryption = true
+#     enable_lifecycle  = true
+#   },
 #  {
 #    name              ="posistrength-dev-ecr1"
 #    enable_scanning   = true
@@ -301,19 +301,16 @@ ecr_repositories = [
 #    enable_encryption = true
 #    enable_lifecycle  = true
 #  }
-]
+#]
 
-lifecycle_policy = {
-  rulePriority = 1
-  description  = "Keep only the last 10 images"
-  tagStatus    = "any"
-  countType    = "imageCountMoreThan"
-  countNumber  = 10
-  actionType   = "expire"
-}
-
-
-
+# lifecycle_policy = {
+#   rulePriority = 1
+#   description  = "Keep only the last 10 images"
+#   tagStatus    = "any"
+#   countType    = "imageCountMoreThan"
+#   countNumber  = 10
+#   actionType   = "expire"
+# }
 
 
 ########################################################################################################
@@ -420,11 +417,11 @@ lifecycle_policy = {
 
 ########################################################################################################
 
-s3bucketslist = [
-  {
-    bucket_name   ="posistrength-dev-bucket"
-    force_destroy = true
-    versioning    = true
-    public_access = true
-  },
-]
+# s3bucketslist = [
+#   {
+#     bucket_name   ="posistrength-dev-bucket"
+#     force_destroy = true
+#     versioning    = true
+#     public_access = true
+#   },
+# ]

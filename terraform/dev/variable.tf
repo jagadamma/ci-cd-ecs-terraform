@@ -104,9 +104,9 @@ variable "private_subnet_route_tables" {
   type = list(any)
 }
 
-variable "db_subnet_route_tables" {
-  type = list(any)
-}
+#variable "db_subnet_route_tables" {
+#  type = list(any)
+#}
 
 variable "nat_gateways" {
   type = list(any)
@@ -160,21 +160,21 @@ variable "nat_gateways" {
 # -----------------------------
 # ECR Inputs
 # -----------------------------
-variable "ecr_repositories" {
-  description = "List of ECR repositories"
-  type = list(object({
-    name              = string
-    enable_lifecycle  = bool
-    enable_scanning   = bool
-    tag_mutability    = string
-    enable_encryption = bool
-  }))
-}
+#variable "ecr_repositories" {
+#  description = "List of ECR repositories"
+#  type = list(object({
+#    name              = string
+#    enable_lifecycle  = bool
+#    enable_scanning   = bool
+#    tag_mutability    = string
+#    enable_encryption = bool
+#  }))
+#}
 
-variable "kms_key_alias" {
-  type        = string
-  description = "KMS alias for ECR encryption"
-}
+# variable "kms_key_alias" {
+#   type        = string
+#   description = "KMS alias for ECR encryption"
+# }
 
 # variable "service_ecr_map" {
 #   description = "Map ECS services to ECR repositories"
@@ -319,14 +319,14 @@ variable "kms_key_alias" {
 # -----------------------------
 # S3 Inputs
 # -----------------------------
-variable "s3bucketslist" {
-  type = list(object({
-    bucket_name   = string
-    force_destroy = bool
-    versioning    = bool
-    public_access = bool
-  }))
-}
+# variable "s3bucketslist" {
+#   type = list(object({
+#     bucket_name   = string
+#     force_destroy = bool
+#     versioning    = bool
+#     public_access = bool
+#   }))
+# }
 
 # variable "artifact_bucket" {
 #   description = "S3 bucket used by CodePipeline and CodeBuild for artifacts"
