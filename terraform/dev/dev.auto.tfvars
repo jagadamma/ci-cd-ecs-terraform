@@ -190,35 +190,37 @@ vpc_flow_logs = {
 # "posistrength.com",
 # ]
 
-#rds = {
-#  mysql = {
-#    name                                  ="posistrength-dev-mysql-db"
-#    db_identifier                         = "mysql-db"
-#    instance_class                        = "db.t3.medium"
-#    allocated_storage                     = 30
-#    engine                                = "mysql"
-#    engine_version                        = "8.0.43"
-#    db_name                               = "mysqldb"
-#    dbername                              = "mysqladmin"
-#    db_sg_name                            ="posistrength-dev-mysql-sg"
-#    subnet_group_name                     ="posistrength-dev-mysql-subnet-group"
-#    kms_key_name                          ="posistrength-dev-mysql-kms-key"
-#    parameter_group_name                  ="posistrength-dev-mysql-parmater-group"
-#    parameter_group_family                = "mysql8.0"
-##    auto_minor_version_upgrade            = true
-#   backup_retention_period               = 7
-#    port                                  = 3306
-#    copy_tags_to_snapshot                 = true
-#    performance_insights_enabled          = true
-#    performance_insights_retention_period = 7
-#    multi_az                              = false
-#    publicly_accessible                   = false
-#    skip_final_snapshot                   = true
-#    storage_encrypted                     = true
-#    storage_type                          = "gp3"
-#    deletion_protection                   = true
-#  }
-#}
+rds = {
+ mysql = {
+   name                                  ="posistrength-dev-mysql-db"
+   db_identifier                         = "mysql-db"
+   instance_class                        = "db.t3.medium"
+   allocated_storage                     = 30
+   engine                                = "mysql"
+   engine_version                        = "8.0.43"
+   db_name                               = "mysqldb"
+   db_username                           = "mysqladmin"
+   db_sg_name                            ="posistrength-dev-mysql-sg"
+   subnet_group_name                     ="posistrength-dev-mysql-subnet-group"
+   kms_key_name                          ="posistrength-dev-mysql-kms-key"
+   parameter_group_name                  ="posistrength-dev-mysql-parmater-group"
+   parameter_group_family                = "mysql8.0"
+   auto_minor_version_upgrade            =    true
+   backup_retention_period                = 7
+   port                                  = 3306
+   copy_tags_to_snapshot                 = true
+   performance_insights_enabled          = true
+   performance_insights_retention_period = 7
+   multi_az                              = false
+   publicly_accessible                   = false
+   skip_final_snapshot                   = true
+   storage_encrypted                     = true
+   storage_type                          = "gp3"
+   deletion_protection                   = true
+   db_name                               = "mysql"
+   db_username                           = "admin"
+ }
+}
 
 
 # sns = {

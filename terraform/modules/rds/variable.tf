@@ -13,7 +13,7 @@ variable "rds" {
     parameter_group_family= string
     backup_retention_period = number
     port              = number
-    db_sg_name                            = string
+    db_sg_name            = string
     subnet_group_name                     = string
     kms_key_name                          = string
     storage_type      = string

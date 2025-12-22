@@ -1,7 +1,7 @@
 resource "random_password" "rds_password" {
   for_each         = var.rds
   length           = 9
-  special          = false
+  special          = true
   override_special = "_!%^"
 }
 
@@ -14,5 +14,7 @@ resource "aws_secretsmanager_secret" "rds_secret" {
 resource "aws_secretsmanager_secret_version" "rds_secret_version" {
   for_each      = var.rds
   secret_id     = aws_secretsmanager_secret.rds_secret[each.key].id
-  secret_string = random_password.rds_password[each.key].result
+  secret_string = jsonencode({
+    password = random_password.rds_password[each.key].result
+  })
 }

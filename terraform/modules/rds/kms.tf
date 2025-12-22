@@ -1,4 +1,3 @@
-
 resource "aws_kms_key" "kms" {
   for_each = var.rds
 
@@ -7,18 +6,38 @@ resource "aws_kms_key" "kms" {
   multi_region            = false
   deletion_window_in_days = 7
 
-lifecycle {
-  ignore_changes = [tags, tags_all]
-}
+  lifecycle {
+    ignore_changes = [tags, tags_all]
+  }
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [{
-      "Effect": "Allow",
-      "Principal": { "AWS": "*" },
-      "Action": "kms:*",
-      "Resource": "*"
-    }]
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "EnableRootPermissions"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        }
+        Action   = "kms:*"
+        Resource = "*"
+      },
+      {
+        Sid    = "AllowRDSUsage"
+        Effect = "Allow"
+        Principal = {
+          Service = "rds.amazonaws.com"
+        }
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
+      }
+    ]
   })
 
   tags = merge(
@@ -29,15 +48,8 @@ lifecycle {
   )
 }
 
-resource "time_sleep" "wait_for_kms" {
-  for_each        = var.rds
-  depends_on      = [aws_kms_key.kms]
-  create_duration = "60s"
-}
-
 resource "aws_kms_alias" "kms" {
   for_each      = var.rds
   name          = "alias/${each.value.kms_key_name}"
   target_key_id = aws_kms_key.kms[each.key].key_id
-  depends_on    = [time_sleep.wait_for_kms]
 }

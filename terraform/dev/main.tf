@@ -276,14 +276,14 @@
 # }
 
 
-# module "rds" {
-#   source             = "../modules/rds"
-#   vpc_id             = module.vpc.vpc_ids[0]
-#   vpc_cidr           = module.vpc.vpc_cidr[0]
-#   rds                = var.rds
-#   private_subnet_ids = module.subnet.private_subnet_ids
-#   common_tags        = var.common_tags
-# }
+ module "rds" {
+   source             = "../modules/rds"
+   vpc_id             = module.vpc.vpc_ids[0]
+   vpc_cidr           = module.vpc.vpc_cidr[0]
+   rds                = var.rds
+   private_subnet_ids = module.subnet.private_subnet_ids
+   common_tags        = var.common_tags
+ }
 
 # module "route53" {
 #   source       = "../modules/route53"
