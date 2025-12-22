@@ -7,6 +7,12 @@ on:
     paths:
       - "terraform/dev/**"
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to checkout for source code'
+        required: true
+        default: 'master'
+        type: string
 
 permissions:
   id-token: write
@@ -55,45 +61,43 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const fs = require('fs');
-
-            const planPath = 'dev/plan.txt';
+            const planPath = 'terraform/dev/plan.txt';
+      
             let plan = 'Plan output not available.';
-
             if (fs.existsSync(planPath)) {
               plan = fs.readFileSync(planPath, 'utf8');
             }
-
+      
             const MAX_LENGTH = 65000;
             const truncated = plan.length > MAX_LENGTH;
             const visiblePlan = plan.slice(0, MAX_LENGTH);
-
+      
             const body = `
             ## 🏗️ Terraform Plan (dev)
-
             **Triggered by:** @${context.actor}  
-            **Commit:** \`${context.payload.pull_request.head.sha}\`  
-
+            **Commit:** \`${context.payload.pull_request.head.sha}\`
+      
             <details>
             <summary>📄 Show Terraform Plan</summary>
-
+      
             \`\`\`hcl
             ${visiblePlan}
             \`\`\`
             ${truncated ? '\n⚠️ Output truncated due to GitHub comment limits.' : ''}
             </details>
             `;
-
+      
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
             });
-
+      
             const existing = comments.find(c =>
               c.user.type === 'Bot' &&
               c.body.includes('Terraform Plan (dev)')
             );
-
+      
             if (existing) {
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,
@@ -109,4 +113,3 @@ jobs:
                 body,
               });
             }
- 
