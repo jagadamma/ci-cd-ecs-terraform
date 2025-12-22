@@ -22,23 +22,23 @@ resource "aws_security_group" "vpc_endpoints_sg" {
 ##############################
 # VPC Endpoint (ecr.dkr)
 ##############################
-resource "aws_vpc_endpoint" "ecr_dkr" {
-  vpc_id              = var.vpc_id
-  service_name        = "com.amazonaws.${var.region}.ecr.dkr"
-  vpc_endpoint_type   = "Interface"
-  private_dns_enabled = true
+# resource "aws_vpc_endpoint" "ecr_dkr" {
+#   vpc_id              = var.vpc_id
+#   service_name        = "com.amazonaws.${var.region}.ecr.dkr"
+#   vpc_endpoint_type   = "Interface"
+#   private_dns_enabled = true
  
-  security_group_ids = [aws_security_group.vpc_endpoints_sg.id]
-  subnet_ids         = aws_subnet.private_subnets[*].id
+#   security_group_ids = [aws_security_group.vpc_endpoints_sg.id]
+#   subnet_ids         = aws_subnet.private_subnets[*].id
  
-   tags = merge(
-    var.common_tags,
-    {
-      Name = "${var.name_prefix}-docker-vpc-endpoint"
-    }
-  )
+#    tags = merge(
+#     var.common_tags,
+#     {
+#       Name = "${var.name_prefix}-docker-vpc-endpoint"
+#     }
+#   )
 
-}
+# }
 
 
 ##############################
