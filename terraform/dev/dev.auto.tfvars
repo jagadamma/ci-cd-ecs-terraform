@@ -107,88 +107,70 @@ vpc_flow_logs = {
 }
 
 
-# ------------------------------
-# ACM Single SAN Certificate
-# ------------------------------
-# multi_domain_cert = {
-#   domain_name ="posistrength.com"
-
-#   subject_alternative_names = [
-#     "ap.posistrength.com",
-#     "ap.posistrength.com"
-#   ]
-# }
-# validation_method = "DNS"
 
 
-# hosted_zones = {
-# "posistrength.com" = {
-#     comment       = "Production domain"
-#     force_destroy = false
-#     private_zone  = false
-#   }
+multi_domain_cert = {
+  domain_name = "posistrength.ae"
 
-#   "alekya.com" = {
-#     comment       = "Internal"
-#     force_destroy = true
-#     private_zone  = false
-#   }
-# }
+  subject_alternative_names = [
+    "dev.posistrength.ae",
+    "www.dev.posistrength.ae"
+  ]
+}
 
-# records = {
-#   app-a-recor-posistrength = {
-#     zone_name ="posistrength.com"
-#     name      = "ap.posistrength.com"
-#     type      = "A"
-#     ttl       = 300
-#     records   = ["10.0.0.10"]
-#   }
 
-#   api-cnam-posistrength = {
-#     zone_name ="posistrength.com"
-#     name      = "ap.posistrength.com"
-#     type      = "CNAME"
-#     ttl       = 300
-#     records   = ["ap.posistrength.com"]
-#   }
+validation_method = "DNS"
 
-#   app-a-record-internal = {
-#     zone_name = "alekya.com"
-#     name      = "app.alekya.com"
-#     type      = "A"
-#     ttl       = 300
-#     records   = ["10.0.0.10"]
-#   }
+hosted_zones = {
+  "posistrength.ae" = {
+    comment       = "Production public domain"
+    force_destroy = false
+    private_zone  = false
+  }
 
-#   api-cname-internal = {
-#     zone_name = "alekya.com"
-#     name      = "api.alekya.com"
-#     type      = "CNAME"
-#     ttl       = 300
-#     records   = ["app.ialekya.com"]
-#   }
+  #"alekya.com" = {
+  #  comment       = "Secondary public domain"
+  #  force_destroy = true
+  #  private_zone  = false
+  #}
+}
 
-  # alb-alias = {
-  #   zone_name ="posistrength.com"
-  #   name      = "we.posistrength.com"
-  #   type      = "A"
-  #   ttl       = 0
-  #   records   = []
-  #   alias = {
-  #     name                   = "dualstack.my-alb.amazonaws.com"
-  #     zone_id                = "Z2FDTNDATAQYW2"
-  #     evaluate_target_health = true
-  #   }
-  # }
-#}
+records = {
+  dev_a = {
+    zone_name = "posistrength.ae"
+    name      = "dev.posistrength.ae"
+    type      = "A"
+    ttl       = 300
+    records   = ["10.0.0.10"]   # your server IP
+  }
 
-########################################################################################################
+  www_dev_cname = {
+    zone_name = "posistrength.ae"
+    name      = "www.dev.posistrength.ae"
+    type      = "CNAME"
+    ttl       = 300
+    records   = ["dev.posistrength.ae"]
+  }
+}
 
-# domains = [
-#   "ap.posistrength.com",
-#   "ap.posistrength.com",
-# "posistrength.com",
-# ]
+  
+
+  #alb_alias = {
+  #  zone_name = "posistrength.com"
+  ##  name      = "we.posistrength.com"
+   # type      = "A"
+
+   # alias = {
+   #   name                   = "dualstack.my-alb.amazonaws.com"
+   #   zone_id                = "Z2FDTNDATAQYW2"
+   #   evaluate_target_health = true
+   # }
+ 
+
+
+#domains = [
+##  "posistrength.com"
+#]
 
 rds = {
  mysql = {

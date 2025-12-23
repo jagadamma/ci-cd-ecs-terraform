@@ -1,4 +1,3 @@
-
 resource "aws_route53_zone" "zones" {
   for_each = var.hosted_zones
 
@@ -6,18 +5,16 @@ resource "aws_route53_zone" "zones" {
   comment       = try(each.value.comment, null)
   force_destroy = try(each.value.force_destroy, false)
 
-  # If private_zone = true, attach VPCs
   dynamic "vpc" {
-  for_each = try(each.value.private_zone, false) ? (
-    length(try(each.value.vpc_ids, [])) > 0 ?
-    each.value.vpc_ids :
-    [var.vpc_id]
-  ) : []
-
-  content {
-    vpc_id = vpc.value
+    for_each = (
+      try(each.value.private_zone, false)
+      ? tolist(coalesce(each.value.vpc_ids, []))
+      : []
+    )
+    content {
+      vpc_id = vpc.value
+    }
   }
-}
 
   tags = merge(
     var.common_tags,

@@ -1,9 +1,6 @@
-output "zones" {
+output "zone_ids" {
   value = {
     for k, v in aws_route53_zone.zones :
-    k => {
-      id   = v.zone_id
-      name = v.name
-    }
+    k => v.zone_id
   }
 }

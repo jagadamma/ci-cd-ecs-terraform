@@ -37,6 +37,38 @@
   common_tags = var.common_tags
  }
 
+# ---------------------------
+# Route53 Module
+# ---------------------------
+# =========================
+# Route53
+# =========================
+module "route53" {
+  source = "../modules/route53"
+
+  hosted_zones = {
+    for k, v in var.hosted_zones :
+    k => merge(v, {
+      vpc_ids = module.vpc.vpc_ids
+    })
+  }
+
+  records     = var.records
+  common_tags = var.common_tags
+}
+
+
+# =========================
+# ACM
+# =========================
+module "acm" {
+  source = "../modules/acm"
+  multi_domain_cert = var.multi_domain_cert
+  validation_method = var.validation_method
+  hosted_zone_id = module.route53.zone_ids[var.multi_domain_cert.domain_name]
+
+  common_tags       = var.common_tags
+}
 
 # module "ecr" {
 #   source           = "../modules/ecr"

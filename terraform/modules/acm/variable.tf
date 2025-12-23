@@ -1,7 +1,3 @@
-variable "domains" {
-  type = list(string)
-}
-
 variable "multi_domain_cert" {
   type = object({
     domain_name               = string
@@ -10,8 +6,7 @@ variable "multi_domain_cert" {
 }
 
 variable "validation_method" {
-  type    = string
-  default = "DNS"
+  type = string
 }
 
 variable "hosted_zone_id" {
@@ -19,6 +14,6 @@ variable "hosted_zone_id" {
 }
 
 variable "common_tags" {
-  type        = map(string)
-  description = "Common tags applied to all resources"
+  type    = map(string)
+  default = {}
 }
