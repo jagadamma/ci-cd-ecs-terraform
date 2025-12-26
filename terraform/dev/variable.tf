@@ -117,110 +117,110 @@ variable "nat_gateways" {
 # ---------------------------
 # Route53
 # ---------------------------
-variable "hosted_zones" {
-  type = map(object({
-    comment       = string
-    force_destroy = bool
-    private_zone  = bool
-    vpc_ids       = optional(list(string))
-  }))
-}
+#variable "hosted_zones" {
+#  type = map(object({
+#    comment       = string
+#    force_destroy = bool
+#    private_zone  = bool
+#    vpc_ids       = optional(list(string))
+#  }))
+#}
 
-variable "records" {
-  type = map(object({
-    zone_name = string
-    name      = string
-    type      = string
+#variable "records" {
+#  type = map(object({
+#    zone_name = string
+#    name      = string
+#    type      = string
 
-    records = optional(list(string))
-    ttl     = optional(number)
+#    records = optional(list(string))
+#    ttl     = optional(number)
 
-    alias = optional(object({
-      name                   = string
-      zone_id                = string
-      evaluate_target_health = bool
-    }))
-  }))
-}
+#    alias = optional(object({
+#      name                   = string
+#      zone_id                = string
+#      evaluate_target_health = bool
+#    }))
+#  }))
+#}
 
 # ---------------------------
 # ACM
 # ---------------------------
 
 
-variable "multi_domain_cert" {
-  type = object({
-    domain_name               = string
-    subject_alternative_names = list(string)
-  })
-}
-
-variable "validation_method" {
-  type = string
-}
-# -----------------------------
-# ECS Inputs
-# -----------------------------
-#variable "ecs" {
+#variable "multi_domain_cert" {
 #  type = object({
-#    container_image  = string
-#    container_port   = number
-#    task_cpu         = number
-#    task_memory      = number
-#    container_name   = string # NEW
-#    assign_public_ip = bool   # NEW
-#    desired_count    = number
-#    alb_idle_timeout = number
+#    domain_name               = string
+#    subject_alternative_names = list(string)
 #  })
 #}
 
-#variable "task_definition" {
-#  type = map(object({
-#    image  = string
-#    port   = number
-#    cpu    = number
-#    memory = number
-#  }))
+#variable "validation_method" {
+#  type = string
 #}
+# -----------------------------
+# ECS Inputs
+# -----------------------------
+variable "ecs" {
+  type = object({
+    container_image  = string
+    container_port   = number
+    task_cpu         = number
+    task_memory      = number
+    container_name   = string # NEW
+    assign_public_ip = bool   # NEW
+    desired_count    = number
+    alb_idle_timeout = number
+  })
+}
+
+variable "task_definition" {
+  type = map(object({
+    image  = string
+    port   = number
+    cpu    = number
+    memory = number
+  }))
+}
 
 
-# variable "security_groups" {
-#   type = map(object({
-#     ingress = list(object({
-#       from_port       = number
-#       to_port         = number
-#       protocol        = string
-#       cidr_blocks     = optional(list(string))
-#       security_groups = optional(list(string))
-#     }))
-#     egress = list(object({
-#       from_port   = number
-#       to_port     = number
-#       protocol    = string
-#       cidr_blocks = list(string)
-#     }))
-#   }))
-# }
+variable "security_groups" {
+   type = map(object({
+     ingress = list(object({
+       from_port       = number
+       to_port         = number
+       protocol        = string
+       cidr_blocks     = optional(list(string))
+       security_groups = optional(list(string))
+     }))
+     egress = list(object({
+       from_port   = number
+       to_port     = number
+       protocol    = string
+       cidr_blocks = list(string)
+     }))
+   }))
+ }
 
 
 # -----------------------------
 # ECR Inputs
 # -----------------------------
-#variable "ecr_repositories" {
-#  description = "List of ECR repositories"
-#  type = list(object({
-#    name              = string
-#    enable_lifecycle  = bool
-#    enable_scanning   = bool
-#    tag_mutability    = string
-#    enable_encryption = bool
-#  }))
-#}
+variable "ecr_repositories" {
+  description = "List of ECR repositories"
+  type = list(object({
+    name              = string
+    enable_lifecycle  = bool
+    enable_scanning   = bool
+    tag_mutability    = string
+    enable_encryption = bool
+  }))
+}
 
-# variable "kms_key_alias" {
-#   type        = string
-#   description = "KMS alias for ECR encryption"
-# }
+  variable "kms_key_alias" {
+   type        = string
+   description = "KMS alias for ECR encryption"
+ }
 
 # variable "service_ecr_map" {
 #   description = "Map ECS services to ECR repositories"
@@ -313,55 +313,55 @@ variable "validation_method" {
 # }
 
 
-#  variable "lifecycle_policy" {
-#    description = "ECR lifecycle policy"
-#    type = object({
-#      rulePriority = number
-#      description  = string
-#      tagStatus    = string
-#      countType    = string
-#      countNumber  = number
-#      actionType   = string
-#    })
-#  }
+  variable "lifecycle_policy" {
+    description = "ECR lifecycle policy"
+    type = object({
+    rulePriority = number
+    description  = string
+    tagStatus    = string
+    countType    = string
+    countNumber  = number
+    actionType   = string
+    })
+  }
 
-#variable "kms_key_alias" {
-#  type = string
-#}
+  #variable "kms_key_alias" {
+  #  type = string
+  #}
 
 # -----------------------------
 #RDS Inputs
 #-----------------------------
-variable "rds" {
-  type = map(object({
-    name                                  = string
-    db_identifier                         = string
-    db_name                               = string
-    engine                                = string
-    engine_version                        = string
-    allocated_storage                     = number
-    instance_class                        = string
-    db_username                           = string
-   # db_password                           = string
-    parameter_group_name                  = string
-    parameter_group_family                = string
-    backup_retention_period               = number
-    port                                  = number
-    db_sg_name                            = string
-    subnet_group_name                     = string
-    kms_key_name                          = string
-    storage_type                          = string
-    auto_minor_version_upgrade            = bool
-    multi_az                              = bool
-    publicly_accessible                   = bool
-    skip_final_snapshot                   = bool
-    performance_insights_enabled          = bool
-    performance_insights_retention_period = number
-    copy_tags_to_snapshot                 = bool
-    storage_encrypted                     = bool
-    deletion_protection                   = bool
-  }))
-}
+#variable "rds" {
+#  type = map(object({
+#    name                                  = string
+#    db_identifier                         = string
+#    db_name                               = string
+#    engine                                = string
+#    engine_version                        = string
+#    allocated_storage                     = number
+#    instance_class                        = string
+#    db_username                           = string
+#   # db_password                           = string
+#    parameter_group_name                  = string
+#    parameter_group_family                = string
+#    backup_retention_period               = number
+#    port                                  = number
+#    db_sg_name                            = string
+#    subnet_group_name                     = string
+#    kms_key_name                          = string
+#    storage_type                          = string
+#    auto_minor_version_upgrade            = bool
+#    multi_az                              = bool
+#    publicly_accessible                   = bool
+#    skip_final_snapshot                   = bool
+#    performance_insights_enabled          = bool
+#    performance_insights_retention_period = number
+#    copy_tags_to_snapshot                 = bool
+#    storage_encrypted                     = bool
+#    deletion_protection                   = bool
+#  }))
+#}
 
 
 # -----------------------------
@@ -381,31 +381,31 @@ variable "rds" {
 #   type        = string
 # }
 
-# variable "cicd" {
-#   description = "CI/CD configuration"
-#   type = object({
-#     pipeline_name   = string
-#     artifact_bucket = string
+ variable "cicd" {
+   description = "CI/CD configuration"
+   type = object({
+     pipeline_name   = string
+     artifact_bucket = string
 
-#     github = object({
-#       owner          = string
-#       repo           = string
-#       branch         = string
-#       connection_arn = string
-#       #      token  = string
-#     })
+     github = object({
+       owner          = string
+       repo           = string
+       branch         = string
+       connection_arn = string
+       #  token          = string
+     })
 
-#     codebuild = optional(object({
-#       project_name = string
-#       image        = string
-#       compute_type = string
-#     }))
+     codebuild = optional(object({
+       project_name = string
+       image        = string
+       compute_type = string
+     }))
 
-#     codedeploy = optional(object({
-#       application_name = string
-#       deployment_groups = map(object({
-#         name = string
-#       }))
-#     }))
-#   })
-# }
+     codedeploy = optional(object({
+       application_name = string
+       deployment_groups = map(object({
+         name = string
+       }))
+     }))
+   })
+ }
