@@ -8,34 +8,34 @@
 # #}
 
 
- module "vpc" {
-   source        = "../modules/networking/vpc"
-   region        = var.region
-   environment   = var.environment
-   name_prefix   = var.name_prefix
-   vpcs          = var.vpcs
-   vpc_flow_logs = var.vpc_flow_logs
-   common_tags   = var.common_tags
-   igw_name = var.igw_name
- }
+module "vpc" {
+  source        = "../modules/networking/vpc"
+  region        = var.region
+  environment   = var.environment
+  name_prefix   = var.name_prefix
+  vpcs          = var.vpcs
+  vpc_flow_logs = var.vpc_flow_logs
+  common_tags   = var.common_tags
+  igw_name      = var.igw_name
+}
 
- module "subnet" {
-   source                      = "../modules/networking/subnets"
-   vpc_id                      = module.vpc.vpc_ids[0]
-   vpc_cidr                    = module.vpc.vpc_cidr[0]
-   name_prefix                 = var.name_prefix
-   internet_gateway_id         = module.vpc.internet_gateway_ids[0]
-   region                      = var.region
-   environment                 = var.environment
-   nat_gateways                = var.nat_gateways
-   private_subnets             = var.private_subnets
-   public_subnets              = var.public_subnets
-   private_subnet_route_tables = var.private_subnet_route_tables
-   public_subnet_route_tables  = var.public_subnet_route_tables
-   #  ecs_security_group_id = aws_security_group.ecs_sg.id
+module "subnet" {
+  source                      = "../modules/networking/subnets"
+  vpc_id                      = module.vpc.vpc_ids[0]
+  vpc_cidr                    = module.vpc.vpc_cidr[0]
+  name_prefix                 = var.name_prefix
+  internet_gateway_id         = module.vpc.internet_gateway_ids[0]
+  region                      = var.region
+  environment                 = var.environment
+  nat_gateways                = var.nat_gateways
+  private_subnets             = var.private_subnets
+  public_subnets              = var.public_subnets
+  private_subnet_route_tables = var.private_subnet_route_tables
+  public_subnet_route_tables  = var.public_subnet_route_tables
+  #  ecs_security_group_id = aws_security_group.ecs_sg.id
 
   common_tags = var.common_tags
- }
+}
 
 # =========================
 # Route53
@@ -67,43 +67,62 @@
 #  common_tags       = var.common_tags
 #}
 
- module "ecr" {
-   source           = "../modules/ecr"
-   ecr_repositories = var.ecr_repositories
-   lifecycle_policy = var.lifecycle_policy
-   common_tags      = var.common_tags
-   name_prefix      = var.name_prefix 
-   kms_key_alias    = var.kms_key_alias
- }
+module "ecr" {
+  source           = "../modules/ecr"
+  ecr_repositories = var.ecr_repositories
+  lifecycle_policy = var.lifecycle_policy
+  common_tags      = var.common_tags
+  name_prefix      = var.name_prefix
+  kms_key_alias    = var.kms_key_alias
+}
 
- module "ecs" {
-   source = "../modules/ecs"
+module "ecs_https_sg_rule" {
+  source = "../modules/security-groups"
 
-   name_prefix        = var.name_prefix
-   environment        = var.environment
-   vpc_id             = module.vpc.vpc_ids[0]
-   private_subnet_ids = module.subnet.private_subnet_ids
-   public_subnet_ids  = module.subnet.public_subnet_ids
+  # comes from tfvars
+  security_group_rules = var.security_group_rules
 
-   desired_count    = var.ecs.desired_count
-   alb_idle_timeout = var.ecs.alb_idle_timeout
-   assign_public_ip = var.ecs.assign_public_ip
+  # ✅ CORRECT reference (from module output)
+  target_security_group_id = module.subnet.vpc_endpoints_sg_id
 
-   ecs_security_group_ids = [aws_security_group.ecs_sg.id]
-   alb_security_group_ids = [aws_security_group.alb_sg.id]
+  # ✅ ECS task SG (local resource)
+  source_security_group_id = aws_security_group.ecs_sg.id
 
-   # ✅ PASS FULL MAP (NO each.key HERE)
-   task_definition = var.task_definition
 
-   execution_role_arn = module.iam.ecs_task_execution_role_arn
-   task_role_arn      = module.iam.ecs_task_role_arn
+}
 
-   tags = var.common_tags
 
-   depends_on = [
-     aws_security_group.alb_sg,
-     aws_security_group.ecs_sg
-   ]
+
+module "ecs" {
+  source = "../modules/ecs"
+
+  name_prefix            = var.name_prefix
+  environment            = var.environment
+  vpc_id                 = module.vpc.vpc_ids[0]
+  private_subnet_ids     = module.subnet.private_subnet_ids
+  public_subnet_ids      = module.subnet.public_subnet_ids
+  desired_count          = var.ecs.desired_count
+  alb_idle_timeout       = var.ecs.alb_idle_timeout
+  assign_public_ip       = var.ecs.assign_public_ip
+  ecs_security_group_ids = [aws_security_group.ecs_sg.id]
+  alb_security_group_ids = [aws_security_group.alb_sg.id]
+  # ✅ PASS FULL MAP (NO each.key HERE)
+  task_definition = var.task_definition
+
+  # execution_role_arn = module.iam.ecs_task_execution_role_arn
+  #task_role_arn      = module.iam.ecs_task_role_arn
+
+  execution_role_arn = local.ecs_task_execution_role_arn
+  task_role_arn      = local.ecs_task_role_arn
+
+
+
+  tags = var.common_tags
+
+  depends_on = [
+    aws_security_group.alb_sg,
+    aws_security_group.ecs_sg
+  ]
 }
 #   vpc_id       = module.vpc.vpc_ids[0]
 #   hosted_zones = var.hosted_zones
@@ -129,82 +148,83 @@
 #   common_tags = var.common_tags
 # }
 
- module "codebuild" {
-   for_each     = var.task_definition
-   source       = "../modules/codebuild"
-   project_name = var.cicd.codebuild.project_name
-
-   name_prefix  = var.name_prefix
-   environment  = var.environment
-   region       = var.region
-   service_name = each.key
-   service_role = module.iam.codebuild_role_arn
-   ecr_repo_url = module.ecr.repo_urls[var.service_ecr_map[each.key]]
-
-
-   tags = var.common_tags
- }
-
- resource "aws_codedeploy_app" "ecs" {
-   name             = "${var.name_prefix}-${var.environment}-ecs-app"
-   compute_platform = "ECS"
- }
-
-
- module "codedeploy" {
-   for_each = var.task_definition
-
-   source              = "../modules/codedeploy"
-   codedeploy_app_name = aws_codedeploy_app.ecs.name
-   name_prefix         = var.name_prefix
-   environment         = var.environment
-
-   service_role_arn = module.iam.codedeploy_role_arn
-
-
-   ecs_cluster_name = module.ecs.cluster_name
-   ecs_service_name = module.ecs.service_names[each.key]
-
-   alb_listener_arn = module.ecs.alb_listener_arn
-   blue_tg_name     = module.ecs.blue_tg_names[each.key]
-   green_tg_name    = module.ecs.green_tg_names[each.key]
-
-
- }
-
- module "codepipeline" {
-   for_each = var.task_definition
-   source   = "../modules/codepipeline"
-
-   name_prefix = var.name_prefix
-   environment = var.environment
-
-   #  pipeline_name   = var.cicd.pipeline_name
-   pipeline_name = "${var.cicd.pipeline_name}-${each.key}"
-
-   artifact_bucket = var.cicd.artifact_bucket
-
-   role_arn = module.iam.codepipeline_role_arn
-
-   github_owner            = var.cicd.github.owner
-   github_repo             = var.cicd.github.repo
-   github_branch           = var.cicd.github.branch
-   codestar_connection_arn = var.cicd.github.connection_arn
-
-   #   github_token  = var.cicd.github.token
-   codebuild_project_name = module.codebuild[each.key].project_name
-   codedeploy_app_name    = module.codedeploy[each.key].app_name
-   codedeploy_dg_name     = module.codedeploy[each.key].dg_name
-   taskdef_template_path  = "taskdef-${each.key}.json"
-   appspec_template_path  = "appspec-${each.key}.yaml"
-
-   depends_on = [
-     module.s3buckets
-   ]
- }
-
-
-
+#  module "codebuild" {
+#    for_each     = var.task_definition
+#    source       = "../modules/codebuild"
+#    project_name = var.cicd.codebuild.project_name
+# 
+#    name_prefix  = var.name_prefix
+#    environment  = var.environment
+#    region       = var.region
+#    service_name = each.key
+#    image_tag    = var.cicd.codebuild.image_tag
+#    service_role = module.iam.codebuild_role_arn
+#    ecr_repo_url = module.ecr.repo_urls[var.service_ecr_map[each.key]]
+# 
+# 
+#    tags = var.common_tags
+#  }
+# 
+#  resource "aws_codedeploy_app" "ecs" {
+#    name             = "${var.name_prefix}-${var.environment}-ecs-app"
+#    compute_platform = "ECS"
+#  }
+# 
+# 
+#  module "codedeploy" {
+#    for_each = var.task_definition
+# 
+#    source              = "../modules/codedeploy"
+#    codedeploy_app_name = aws_codedeploy_app.ecs.name
+#    name_prefix         = var.name_prefix
+#    environment         = var.environment
+# 
+#    service_role_arn = module.iam.codedeploy_role_arn
+# 
+# 
+#    ecs_cluster_name = module.ecs.cluster_name
+#    ecs_service_name = module.ecs.service_names[each.key]
+# 
+#    alb_listener_arn = module.ecs.alb_listener_arn
+#    blue_tg_name     = module.ecs.blue_tg_names[each.key]
+#    green_tg_name    = module.ecs.green_tg_names[each.key]
+# 
+# 
+#  }
+# 
+#  module "codepipeline" {
+#    for_each = var.task_definition
+#    source   = "../modules/codepipeline"
+# 
+#    name_prefix = var.name_prefix
+#    environment = var.environment
+# 
+#    #  pipeline_name   = var.cicd.pipeline_name
+#    pipeline_name = "${var.cicd.pipeline_name}-${each.key}"
+# 
+#    artifact_bucket = var.cicd.artifact_bucket
+# 
+#    role_arn = module.iam.codepipeline_role_arn
+# 
+#    github_owner            = var.cicd.github.owner
+#    github_repo             = var.cicd.github.repo
+#    github_branch           = var.cicd.github.branch
+#    codestar_connection_arn = var.cicd.github.connection_arn
+# 
+#    #   github_token  = var.cicd.github.token
+#    codebuild_project_name = module.codebuild[each.key].project_name
+#    codedeploy_app_name    = module.codedeploy[each.key].app_name
+#    codedeploy_dg_name     = module.codedeploy[each.key].dg_name
+#    taskdef_template_path  = "taskdef-${each.key}.json"
+#    appspec_template_path  = "appspec-${each.key}.yaml"
+# 
+#    depends_on = [
+#      module.s3buckets
+#    ]
+#  }
+# 
+# 
+# 
 # #############################
 # # ALB Security Group
 # #############################
@@ -271,12 +291,19 @@ resource "aws_security_group" "ecs_sg" {
 }
 
 
- module "iam" {
-   source                  = "../modules/iam"
+module "iam_ecs" {
+   source                  = "../modules/iam-ecs"
    name_prefix             = var.name_prefix
-   codestar_connection_arn = var.cicd.github.connection_arn
-   artifact_bucket         = var.cicd.artifact_bucket
 }
+
+
+#module "iam_ecs" {
+#   source                  = "../modules/iam-ecs"
+#   name_prefix             = var.name_prefix
+#  codestar_connection_arn = var.cicd.github.connection_arn
+#  artifact_bucket         = var.cicd.artifact_bucket
+#}
+
 
 # #resource "aws_s3_bucket" "codepipeline_artifacts" {
 # #  bucket = "sharadha-dev-us-codepipeline-artifacts"
@@ -291,12 +318,12 @@ resource "aws_security_group" "ecs_sg" {
 # #  )
 # #}
 
-# module "s3buckets" {
-#   source = "../modules/s3buckets"
+module "s3buckets" {
+  source = "../modules/s3buckets"
 
-#   s3bucketslist = var.s3bucketslist
-#   common_tags   = var.common_tags
-# }
+  s3bucketslist = var.s3bucketslist
+  common_tags   = var.common_tags
+}
 
 # #############################
 # # LOCALS (PUT HERE)
@@ -326,15 +353,15 @@ resource "aws_security_group" "ecs_sg" {
 #   distributions = var.distributions
 # }
 
-
- module "rds" {
-   source             = "../modules/rds"
-   vpc_id             = module.vpc.vpc_ids[0]
-   vpc_cidr           = module.vpc.vpc_cidr[0]
-   rds                = var.rds
-   private_subnet_ids = module.subnet.private_subnet_ids
-   common_tags        = var.common_tags
- }
-
+#
+# module "rds" {
+#   source             = "../modules/rds"
+#   vpc_id             = module.vpc.vpc_ids[0]
+#   vpc_cidr           = module.vpc.vpc_cidr[0]
+#   rds                = var.rds
+#   private_subnet_ids = module.subnet.private_subnet_ids
+#   common_tags        = var.common_tags
+# }
+#
 # module "route53" {
 #   source       = "../modules/route53"

@@ -1,5 +1,5 @@
 resource "aws_codebuild_project" "this" {
-  name = "${var.project_name}-${var.service_name}"
+  name         = "${var.project_name}-${var.service_name}"
   service_role = var.service_role
 
   artifacts {
@@ -20,6 +20,16 @@ resource "aws_codebuild_project" "this" {
     environment_variable {
       name  = "ECR_REPO"
       value = var.ecr_repo_url
+    }
+
+    environment_variable {
+      name  = "IMAGE_TAG"
+      value = var.image_tag
+    }
+
+    environment_variable {
+      name  = "SERVICE_NAME"
+      value = var.service_name
     }
   }
 

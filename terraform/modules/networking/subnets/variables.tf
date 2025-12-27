@@ -60,3 +60,25 @@ variable "common_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "vpc_endpoint_sg_ingress" {
+  type = list(object({
+    from_port       = number
+    to_port         = number
+    protocol        = string
+    cidr_blocks     = optional(list(string))
+    security_groups = optional(list(string))
+  }))
+  default = []
+}
+
+variable "vpc_endpoint_sg_egress" {
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+  default = []
+}
+

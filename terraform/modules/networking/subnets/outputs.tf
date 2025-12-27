@@ -18,3 +18,8 @@ output "nat_gateway_public_ips" {
   value = [aws_eip.nat_eip.public_ip]
 }
 
+output "vpc_endpoints_sg_id" {
+  description = "Security group ID for VPC interface endpoints"
+  value       = aws_security_group.vpc_endpoints_sg.id
+}
+

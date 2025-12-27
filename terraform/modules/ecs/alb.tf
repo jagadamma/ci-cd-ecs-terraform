@@ -1,5 +1,7 @@
-locals {
-  first_service = sort(keys(var.task_definition))[0]
+ locals {
+     ordered_services = sort(keys(var.task_definition))
+
+     first_service = sort(keys(var.task_definition))[0]
 }
 
 resource "aws_lb" "alb" {
@@ -76,7 +78,10 @@ resource "aws_lb_listener_rule" "rule" {
   for_each = var.task_definition
 
   listener_arn = aws_lb_listener.listener.arn
-  priority     = 100 + index(keys(var.task_definition), each.key)
+
+  priority = 100 + index(local.ordered_services, each.key)
+
+  #  priority     = 100 + index(keys(var.task_definition), each.key)
 
   action {
     type             = "forward"

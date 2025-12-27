@@ -30,9 +30,9 @@ variable "assign_public_ip" {
   type = bool
 }
 
-variable "execution_role_arn" {
-  type = string
-}
+#variable "execution_role_arn" {
+#  type = string
+#}
 
 variable "tags" {
   type = map(string)
@@ -45,6 +45,12 @@ variable "ecs_security_group_ids" {
 variable "alb_security_group_ids" {
   type = list(string)
 }
+variable "execution_role_arn" {
+  description = "IAM role used by ECS agent to pull images, logs, etc"
+  type        = string
+  default     = null
+}
+
 
 # Multi-service ECS Task Definition List
 variable "task_definition" {
@@ -56,6 +62,13 @@ variable "task_definition" {
   }))
 }
 
+#variable "task_role_arn" {
+#  type = string
+#}
+
 variable "task_role_arn" {
-  type = string
+  description = "IAM role assumed by the ECS task"
+  type        = string
+  default     = null
 }
+

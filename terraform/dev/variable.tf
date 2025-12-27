@@ -185,22 +185,38 @@ variable "task_definition" {
 
 
 variable "security_groups" {
-   type = map(object({
-     ingress = list(object({
-       from_port       = number
-       to_port         = number
-       protocol        = string
-       cidr_blocks     = optional(list(string))
-       security_groups = optional(list(string))
-     }))
-     egress = list(object({
-       from_port   = number
-       to_port     = number
-       protocol    = string
-       cidr_blocks = list(string)
-     }))
-   }))
- }
+  type = map(object({
+    ingress = list(object({
+      from_port       = number
+      to_port         = number
+      protocol        = string
+      cidr_blocks     = optional(list(string))
+      security_groups = optional(list(string))
+    }))
+    egress = list(object({
+      from_port   = number
+      to_port     = number
+      protocol    = string
+      cidr_blocks = list(string)
+    }))
+  }))
+}
+
+variable "security_group_rules" {
+  type = map(object({
+    from_port = number
+    to_port   = number
+    protocol  = string
+  }))
+}
+
+
+variable "use_existing_iam" {
+  description = "Whether to use pre-existing IAM roles"
+  type        = bool
+  default     = false
+}
+
 
 
 # -----------------------------
@@ -217,15 +233,15 @@ variable "ecr_repositories" {
   }))
 }
 
-  variable "kms_key_alias" {
-   type        = string
-   description = "KMS alias for ECR encryption"
- }
+variable "kms_key_alias" {
+  type        = string
+  description = "KMS alias for ECR encryption"
+}
 
-# variable "service_ecr_map" {
-#   description = "Map ECS services to ECR repositories"
-#   type        = map(string)
-# }
+variable "service_ecr_map" {
+  description = "Map ECS services to ECR repositories"
+  type        = map(string)
+}
 
 # variable "hosted_zones" {
 #   description = "Route53 hosted zones"
@@ -313,21 +329,21 @@ variable "ecr_repositories" {
 # }
 
 
-  variable "lifecycle_policy" {
-    description = "ECR lifecycle policy"
-    type = object({
+variable "lifecycle_policy" {
+  description = "ECR lifecycle policy"
+  type = object({
     rulePriority = number
     description  = string
     tagStatus    = string
     countType    = string
     countNumber  = number
     actionType   = string
-    })
-  }
+  })
+}
 
-  #variable "kms_key_alias" {
-  #  type = string
-  #}
+#variable "kms_key_alias" {
+#  type = string
+#}
 
 # -----------------------------
 #RDS Inputs
@@ -367,45 +383,46 @@ variable "ecr_repositories" {
 # -----------------------------
 # S3 Inputs
 # -----------------------------
-# variable "s3bucketslist" {
-#   type = list(object({
-#     bucket_name   = string
-#     force_destroy = bool
-#     versioning    = bool
-#     public_access = bool
-#   }))
-# }
+variable "s3bucketslist" {
+  type = list(object({
+    bucket_name   = string
+    force_destroy = bool
+    versioning    = bool
+    public_access = bool
+  }))
+}
 
 # variable "artifact_bucket" {
-#   description = "S3 bucket used by CodePipeline and CodeBuild for artifacts"
-#   type        = string
+#  description = "S3 bucket used by CodePipeline and CodeBuild for artifacts"
+#  type        = string
 # }
 
- variable "cicd" {
-   description = "CI/CD configuration"
-   type = object({
-     pipeline_name   = string
-     artifact_bucket = string
-
-     github = object({
-       owner          = string
-       repo           = string
-       branch         = string
-       connection_arn = string
-       #  token          = string
-     })
-
-     codebuild = optional(object({
-       project_name = string
-       image        = string
-       compute_type = string
-     }))
-
-     codedeploy = optional(object({
-       application_name = string
-       deployment_groups = map(object({
-         name = string
-       }))
-     }))
-   })
- }
+#   variable "cicd" {
+#    description = "CI/CD configuration"
+#    type = object({
+#      pipeline_name   = string
+#      artifact_bucket = string
+# 
+#      github = object({
+#        owner          = string
+#        repo           = string
+#        branch         = string
+#        connection_arn = string
+#        #  token          = string
+#      })
+# 
+#      codebuild = optional(object({
+#        project_name = string
+#        image        = string
+#        compute_type = string
+#        image_tag    = string 
+#      }))
+# 
+#      codedeploy = optional(object({
+#        application_name = string
+#        deployment_groups = map(object({
+#          name = string
+#        }))
+#      }))
+#    })
+#  }

@@ -1,4 +1,6 @@
 resource "aws_iam_role" "codebuild" {
+  count = var.artifact_bucket == null ? 0 : 1
+
   name = "${var.name_prefix}-codebuild-role"
 
   assume_role_policy = jsonencode({
@@ -14,6 +16,8 @@ resource "aws_iam_role" "codebuild" {
 }
 
 resource "aws_iam_policy" "codebuild_logs" {
+  count      = var.artifact_bucket == null ? 0 : 1
+
   name = "${var.name_prefix}-codebuild-logs"
 
   policy = jsonencode({
@@ -33,6 +37,8 @@ resource "aws_iam_policy" "codebuild_logs" {
 }
 
 resource "aws_iam_policy" "codebuild_artifacts_s3" {
+  count = var.artifact_bucket == null ? 0 : 1
+
   name = "${var.name_prefix}-codebuild-artifacts-s3"
 
   policy = jsonencode({
@@ -60,14 +66,20 @@ resource "aws_iam_policy" "codebuild_artifacts_s3" {
 }
 
 resource "aws_iam_role_policy_attachment" "codebuild_artifacts_attach" {
-  role       = aws_iam_role.codebuild.name
-  policy_arn = aws_iam_policy.codebuild_artifacts_s3.arn
+  count      = var.artifact_bucket == null ? 0 : 1
+
+  role       = aws_iam_role.codebuild[0].name
+  policy_arn = aws_iam_policy.codebuild_artifacts_s3[0].arn
+
+  # policy_arn = aws_iam_policy.codebuild_artifacts_s3.arn
 }
 
 
 resource "aws_iam_role_policy_attachment" "codebuild_logs_attach" {
-  role       = aws_iam_role.codebuild.name
-  policy_arn = aws_iam_policy.codebuild_logs.arn
+  count      = var.artifact_bucket == null ? 0 : 1
+
+  role       = aws_iam_role.codebuild[0].name
+  policy_arn = aws_iam_policy.codebuild_logs[0].arn
 }
 
 #resource "aws_iam_role_policy_attachment" "codebuild_managed" {
@@ -78,12 +90,20 @@ resource "aws_iam_role_policy_attachment" "codebuild_logs_attach" {
 
 # AWS managed policy (safe for prod)
 resource "aws_iam_role_policy_attachment" "codebuild_main" {
-  role       = aws_iam_role.codebuild.name
+  count      = var.artifact_bucket == null ? 0 : 1
+
+  #  role       = aws_iam_role.codebuild.name
+  role = aws_iam_role.codebuild[0].name
+
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess"
 }
 
 # ECR access
 resource "aws_iam_role_policy_attachment" "codebuild_ecr" {
-  role       = aws_iam_role.codebuild.name
+  count      = var.artifact_bucket == null ? 0 : 1
+
+  # role       = aws_iam_role.codebuild.name
+  role       = aws_iam_role.codebuild[0].name
+
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser"
 }

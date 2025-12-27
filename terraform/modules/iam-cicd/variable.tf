@@ -4,8 +4,12 @@ variable "name_prefix" {
 
 variable "codestar_connection_arn" {
   type        = string
+  default = null
+
   description = "CodeStar connection ARN for GitHub"
 }
 variable "artifact_bucket" {
   type = string
+  default = null
+
 }

@@ -18,7 +18,10 @@ resource "aws_ecs_task_definition" "task" {
   container_definitions = jsonencode([
     {
       name      = each.key
-      image     = each.value.image
+      image = each.value.image
+
+
+      #      image     = each.value.image
       essential = true
       portMappings = [{
         containerPort = each.value.port
@@ -36,12 +39,18 @@ resource "aws_ecs_service" "service" {
   task_definition = aws_ecs_task_definition.task[each.key].arn
   desired_count   = var.desired_count
   launch_type     = "FARGATE"
+  
+  force_new_deployment = true  
 
   #################################
   # REQUIRED FOR CODEDEPLOY
   #################################
+  #  deployment_controller {
+  #  type = "CODE_DEPLOY"
+  #}
+
   deployment_controller {
-    type = "CODE_DEPLOY"
+    type = "ECS"   # ✅ THIS IS THE FIX
   }
 
   #################################
@@ -71,6 +80,7 @@ resource "aws_ecs_service" "service" {
     ignore_changes = [
       #   task_definition,
       desired_count,
+
       #  load_balancer
     ]
   }

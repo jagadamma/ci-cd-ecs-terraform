@@ -20,17 +20,27 @@ resource "aws_iam_role" "codepipeline" {
 # CODESTAR CONNECTION
 ########################################
 resource "aws_iam_policy" "codestar_use_connection" {
+  count = var.codestar_connection_arn == null ? 0 : 1
+
   name = "${var.name_prefix}-codestar-use-connection"
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Effect   = "Allow"
-      Action   = "codestar-connections:UseConnection"
-      Resource = var.codestar_connection_arn
-    }]
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "codestar-connections:UseConnection"
+        ]
+        Resource = [
+          var.codestar_connection_arn
+        ]
+      }
+    ]
   })
 }
+
+
 
 ########################################
 # CODEBUILD PERMISSIONS
@@ -100,8 +110,12 @@ resource "aws_iam_policy" "codepipeline_ecs" {
 # ATTACH POLICIES
 ########################################
 resource "aws_iam_role_policy_attachment" "codepipeline_codestar" {
+  count      = var.codestar_connection_arn == null ? 0 : 1
+
   role       = aws_iam_role.codepipeline.name
-  policy_arn = aws_iam_policy.codestar_use_connection.arn
+  #  policy_arn = aws_iam_policy.codestar_use_connection.arn
+  policy_arn = aws_iam_policy.codestar_use_connection[0].arn
+
 }
 
 resource "aws_iam_role_policy_attachment" "codepipeline_codebuild_attach" {
