@@ -39,7 +39,17 @@ terraform.rc
 *.swp
 *.swo
 *~
+.swp
+*.swo
+*.swm
+*.swl
+*.swk
+*.swn
+*.swi
+*.swj
 
+# Vim hidden backup files
+.*.sw?
 # OS generated files
 .DS_Store
 Thumbs.db
