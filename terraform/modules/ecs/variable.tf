@@ -1,3 +1,4 @@
+
 variable "name_prefix" {
   type = string
 }
@@ -70,5 +71,36 @@ variable "task_role_arn" {
   description = "IAM role assumed by the ECS task"
   type        = string
   default     = null
+}
+variable "listener_ports" {
+  description = "ALB ports for prod and test listeners"
+  type = object({
+    prod = number
+    test = number
+  })
+}
+
+variable "listener_protocol" {
+  description = "Listener protocol (HTTP/HTTPS)"
+  type        = string
+}
+
+variable "health_check" {
+  type = object({
+    path                = string
+    protocol            = string
+    matcher             = string
+    interval            = number
+    timeout             = number
+    healthy_threshold   = number
+    unhealthy_threshold = number
+  })
+}
+
+variable "traffic_weights" {
+  type = object({
+    blue  = number
+    green = number
+  })
 }
 

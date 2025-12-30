@@ -32,4 +32,3 @@ variable "green_tg_name" {
 variable "codedeploy_app_name" {
   type = string
 }
-

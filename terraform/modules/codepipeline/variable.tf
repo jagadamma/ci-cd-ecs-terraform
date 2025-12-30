@@ -65,3 +65,8 @@ variable "codedeploy_app_name" {
 variable "codedeploy_dg_name" {
   type = string
 }
+#variable "container_name" {
+#  description = "ECS container name for CodeDeploy image replacement"
+#  type        = string
+#}
+

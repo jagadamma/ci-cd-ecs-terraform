@@ -5,6 +5,8 @@
 
 resource "aws_codedeploy_deployment_group" "ecs" {
   app_name              = var.codedeploy_app_name
+  #  app_name = aws_codedeploy_app.ecs.name
+
   deployment_group_name = "${var.name_prefix}-${var.environment}-${var.ecs_service_name}-dg"
   service_role_arn      = var.service_role_arn
 
@@ -56,6 +58,7 @@ resource "aws_codedeploy_deployment_group" "ecs" {
       target_group {
         name = var.blue_tg_name
       }
+
 
       target_group {
         name = var.green_tg_name

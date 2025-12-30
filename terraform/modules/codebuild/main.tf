@@ -23,13 +23,12 @@ resource "aws_codebuild_project" "this" {
     }
 
     environment_variable {
-      name  = "IMAGE_TAG"
-      value = var.image_tag
-    }
-
-    environment_variable {
       name  = "SERVICE_NAME"
       value = var.service_name
+    }
+    environment_variable {
+    name  = "IMAGE_TAG"
+    value = var.image_tag
     }
   }
 

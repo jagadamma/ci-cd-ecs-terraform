@@ -40,18 +40,18 @@ resource "aws_ecs_service" "service" {
   desired_count   = var.desired_count
   launch_type     = "FARGATE"
   
-  force_new_deployment = true  
+ # force_new_deployment = true  
 
   #################################
   # REQUIRED FOR CODEDEPLOY
   #################################
-  #  deployment_controller {
-  #  type = "CODE_DEPLOY"
-  #}
+    deployment_controller {
+      type = "CODE_DEPLOY"
+   }
 
-  deployment_controller {
-    type = "ECS"   # ✅ THIS IS THE FIX
-  }
+  #  deployment_controller {
+  #  type = "ECS"   # ✅ THIS IS THE FIX
+  #}
 
   #################################
   # NETWORK CONFIGURATION
@@ -77,18 +77,19 @@ resource "aws_ecs_service" "service" {
   # CODEDEPLOY CONTROLS DEPLOYMENT
   #################################
   lifecycle {
-    ignore_changes = [
-      #   task_definition,
-      desired_count,
-
-      #  load_balancer
+  ignore_changes = [
+    task_definition,
+    desired_count,
+    load_balancer
     ]
   }
 
-  depends_on = [
-    aws_lb_listener.listener,
-    aws_lb_listener_rule.rule
-  ]
+
+ depends_on = [
+  aws_lb_listener.prod,
+  aws_lb_listener.test
+ ]
+
 
   tags = var.tags
 }

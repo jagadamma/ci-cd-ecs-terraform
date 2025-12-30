@@ -330,7 +330,7 @@ vpc_endpoint_sg_egress = [
 ########################################################################################################
 
 ecs = {
-  container_image = "132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1:latest"
+  container_image = "132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1:v2"
   container_port  = 80
   container_name  = "app1"
 
@@ -349,7 +349,17 @@ security_groups = {
         to_port     = 80
         protocol    = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
+      },
+     
+      {
+        from_port   = 9000
+        to_port     = 9000
+        protocol    = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+        # 🔒 Optional: restrict later to your IP
+        # cidr_blocks = ["YOUR_IP/32"]
       }
+
     ]
     egress = [
       {
@@ -385,7 +395,7 @@ task_definition = {
   app1 = {
 
 
-    image  = "132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1:latest"
+    image  = "132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1:v2"
 #              132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1
     port   = 80
     cpu    = 256
@@ -401,6 +411,43 @@ task_definition = {
 
 use_existing_iam = false
 
+listener_ports = {
+  prod = 80
+  test = 9000
+}
+
+listener_protocol = "HTTP"
+
+#listener_port = 80
+
+
+
+
+################################
+# ALB
+################################
+listener_port = 80
+
+################################
+# HEALTH CHECK
+################################
+health_check = {
+  path                = "/"
+  protocol            = "HTTP"
+  matcher             = "200"
+  interval            = 30
+  timeout             = 5
+  healthy_threshold   = 2
+  unhealthy_threshold = 2
+}
+
+################################
+# BLUE / GREEN WEIGHTS
+################################
+traffic_weights = {
+  blue  = 100
+  green = 0
+}
 
 
 cicd = {
@@ -408,17 +455,18 @@ cicd = {
   artifact_bucket = "posistrength-dev-codepipeline-artifacts"
 
   github = {
-    owner          = "posistrength"
+    owner          = "jagadamma"
     repo           = "nginx-dockerdile-deployment"
     branch         = "master"
-    connection_arn = "arn:aws:codeconnections-east-2:132398229882:connection/01c78266-df87-4b67-9b03-352a1bb1a3fe"
+    connection_arn = "arn:aws:codeconnections:ap-southeast-1:132398229882:connection/60b01002-1ca3-46b6-bcf3-5645b7992d12"
+
   }
 
   codebuild = {
     project_name = "posistrength-dev-codebuild"
     image        = "aws/codebuild/standard:7.0"
     compute_type = "BUILD_GENERAL1_SMALL"
-    image_tag    = "v1"
+    image_tag    = "v2"
   }
 
   codedeploy = {

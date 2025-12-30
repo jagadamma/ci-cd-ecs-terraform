@@ -341,6 +341,39 @@ variable "lifecycle_policy" {
   })
 }
 
+variable "listener_protocol" {
+  type = string
+}
+variable "listener_ports" {
+  type = object({
+    prod = number
+    test = number
+  })
+}
+
+
+variable "health_check" {
+  description = "Health check configuration for ALB target groups"
+  type = object({
+    path                = string
+    protocol            = string
+    matcher             = string
+    interval            = number
+    timeout             = number
+    healthy_threshold   = number
+    unhealthy_threshold = number
+  })
+}
+
+variable "traffic_weights" {
+  description = "Initial traffic weights for blue/green target groups"
+  type = object({
+    blue  = number
+    green = number
+  })
+}
+
+
 #variable "kms_key_alias" {
 #  type = string
 #}
@@ -397,32 +430,32 @@ variable "s3bucketslist" {
 #  type        = string
 # }
 
-#   variable "cicd" {
-#    description = "CI/CD configuration"
-#    type = object({
-#      pipeline_name   = string
-#      artifact_bucket = string
-# 
-#      github = object({
-#        owner          = string
-#        repo           = string
-#        branch         = string
-#        connection_arn = string
-#        #  token          = string
-#      })
-# 
-#      codebuild = optional(object({
-#        project_name = string
-#        image        = string
-#        compute_type = string
-#        image_tag    = string 
-#      }))
-# 
-#      codedeploy = optional(object({
-#        application_name = string
-#        deployment_groups = map(object({
-#          name = string
-#        }))
-#      }))
-#    })
-#  }
+   variable "cicd" {
+    description = "CI/CD configuration"
+    type = object({
+      pipeline_name   = string
+      artifact_bucket = string
+ 
+      github = object({
+        owner          = string
+        repo           = string
+        branch         = string
+        connection_arn = string
+        #  token          = string
+      })
+ 
+      codebuild = optional(object({
+        project_name = string
+        image        = string
+        compute_type = string
+        image_tag    = string 
+      }))
+ 
+      codedeploy = optional(object({
+        application_name = string
+        deployment_groups = map(object({
+          name = string
+        }))
+      }))
+    })
+  }

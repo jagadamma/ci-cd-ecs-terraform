@@ -1,9 +1,14 @@
- locals {
-     ordered_services = sort(keys(var.task_definition))
-
-     first_service = sort(keys(var.task_definition))[0]
+################################
+# LOCALS
+################################
+locals {
+  ordered_services = sort(keys(var.task_definition))
+  first_service    = local.ordered_services[0]
 }
 
+################################
+# APPLICATION LOAD BALANCER
+################################
 resource "aws_lb" "alb" {
   name               = "${var.name_prefix}-${var.environment}-alb"
   load_balancer_type = "application"
@@ -13,84 +18,85 @@ resource "aws_lb" "alb" {
   tags               = var.tags
 }
 
-# -------- BLUE TARGET GROUPS --------
+################################
+# BLUE TARGET GROUPS
+################################
 resource "aws_lb_target_group" "blue" {
   for_each = var.task_definition
 
   name        = "${each.key}-blue-tg"
   port        = each.value.port
-  protocol    = "HTTP"
+  #  protocol    = var.listener_protocol
+  protocol = var.health_check.protocol
+
   vpc_id      = var.vpc_id
   target_type = "ip"
 
   health_check {
-    path = "/"
-  }
-
-  lifecycle {
-    create_before_destroy = true
+    path                = var.health_check.path
+    protocol            = var.health_check.protocol
+    matcher             = var.health_check.matcher
+    interval            = var.health_check.interval
+    timeout             = var.health_check.timeout
+    healthy_threshold   = var.health_check.healthy_threshold
+    unhealthy_threshold = var.health_check.unhealthy_threshold
   }
 
   tags = var.tags
 }
 
-# -------- GREEN TARGET GROUPS --------
+################################
+# GREEN TARGET GROUPS
+################################
 resource "aws_lb_target_group" "green" {
   for_each = var.task_definition
 
   name        = "${each.key}-green-tg"
   port        = each.value.port
-  protocol    = "HTTP"
+#  protocol    = var.listener_protocol
+  protocol = var.health_check.protocol
+
   vpc_id      = var.vpc_id
   target_type = "ip"
 
   health_check {
-    path = "/"
-  }
-
-  lifecycle {
-    create_before_destroy = true
+    path                = var.health_check.path
+    protocol            = var.health_check.protocol
+    matcher             = var.health_check.matcher
+    interval            = var.health_check.interval
+    timeout             = var.health_check.timeout
+    healthy_threshold   = var.health_check.healthy_threshold
+    unhealthy_threshold = var.health_check.unhealthy_threshold
   }
 
   tags = var.tags
 }
 
-# -------- LISTENER --------
-resource "aws_lb_listener" "listener" {
+################################
+# PROD LISTENER (PORT 80)
+################################
+resource "aws_lb_listener" "prod" {
   load_balancer_arn = aws_lb.alb.arn
-  port              = 80
-  protocol          = "HTTP"
+  port              = var.listener_ports.prod
+  protocol          = var.listener_protocol
 
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.blue[local.first_service].arn
-
   }
-  
-  depends_on = [
-    aws_lb_target_group.blue,
-    aws_lb_target_group.green
-  ]
 }
 
-# -------- LISTENER RULES (one per app) --------
-resource "aws_lb_listener_rule" "rule" {
-  for_each = var.task_definition
+################################
+# TEST LISTENER (PORT 9000) - REQUIRED
+################################
+resource "aws_lb_listener" "test" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = var.listener_ports.test
+  protocol          = var.listener_protocol
 
-  listener_arn = aws_lb_listener.listener.arn
-
-  priority = 100 + index(local.ordered_services, each.key)
-
-  #  priority     = 100 + index(keys(var.task_definition), each.key)
-
-  action {
+  default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.blue[each.key].arn
+    target_group_arn = aws_lb_target_group.green[local.first_service].arn
   }
+}
 
-  condition {
-    path_pattern {
-      values = ["/${each.key}/*"]
-     }
-   }
- }

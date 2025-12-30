@@ -76,7 +76,9 @@ resource "aws_codepipeline" "this" {
         AppSpecTemplateArtifact        = "build_output"
         #   AppSpecTemplatePath            = "appspec-${var.service_name}.yaml"
         AppSpecTemplatePath = var.appspec_template_path
-
+                              
+        Image1ArtifactName  = "build_output"
+        Image1ContainerName =  "app1"
       }
     }
   }
