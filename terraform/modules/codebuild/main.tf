@@ -17,19 +17,19 @@ resource "aws_codebuild_project" "this" {
       value = var.region
     }
 
-    environment_variable {
-      name  = "ECR_REPO"
+    environment_variable {     
+      name  = "ECR_REPO_URI"
       value = var.ecr_repo_url
     }
 
-    environment_variable {
-      name  = "SERVICE_NAME"
-      value = var.service_name
-    }
-    environment_variable {
-    name  = "IMAGE_TAG"
-    value = var.image_tag
-    }
+    # environment_variable {
+    #   name  = "SERVICE_NAME"
+    #   value = var.service_name
+    # }
+    # environment_variable {
+    # name  = "IMAGE_TAG"
+    # value = var.image_tag
+    # }
   }
 
   source {

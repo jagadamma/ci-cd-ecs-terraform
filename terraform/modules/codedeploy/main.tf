@@ -55,6 +55,10 @@ resource "aws_codedeploy_deployment_group" "ecs" {
         listener_arns = [var.alb_listener_arn]
       }
 
+      test_traffic_route {
+          listener_arns = [var.alb_test_listener_arn]
+      }
+
       target_group {
         name = var.blue_tg_name
       }

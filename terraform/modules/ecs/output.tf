@@ -27,7 +27,7 @@ output "alb_listener_arn" {
   value = aws_lb_listener.prod.arn
 }
 
-# OPTIONAL
-# output "alb_test_listener_arn" {
-#   value = aws_lb_listener.test.arn
-# }
+
+output "alb_test_listener_arn" {
+  value = aws_lb_listener.test.arn
+}

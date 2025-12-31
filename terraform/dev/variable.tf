@@ -163,7 +163,7 @@ variable "nat_gateways" {
 # -----------------------------
 variable "ecs" {
   type = object({
-    container_image  = string
+    container_image = optional(string)
     container_port   = number
     task_cpu         = number
     task_memory      = number
@@ -218,6 +218,23 @@ variable "use_existing_iam" {
 }
 
 
+variable "vpc_endpoint_sg_ingress" {
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+}
+
+variable "vpc_endpoint_sg_egress" {
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+}
 
 # -----------------------------
 # ECR Inputs
@@ -352,6 +369,7 @@ variable "listener_ports" {
 }
 
 
+
 variable "health_check" {
   description = "Health check configuration for ALB target groups"
   type = object({
@@ -451,11 +469,11 @@ variable "s3bucketslist" {
         image_tag    = string 
       }))
  
-      codedeploy = optional(object({
-        application_name = string
-        deployment_groups = map(object({
-          name = string
-        }))
+       codedeploy = optional(object({
+         application_name = string
+         deployment_groups = map(object({
+           name = string
+         }))
       }))
     })
   }

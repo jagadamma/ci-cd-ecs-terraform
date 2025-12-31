@@ -18,10 +18,8 @@ resource "aws_ecs_task_definition" "task" {
   container_definitions = jsonencode([
     {
       name      = each.key
-      image = each.value.image
-
-
-      #      image     = each.value.image
+      #image = each.value.image
+      image = each.value.image != null ? each.value.image : "IMAGE1_NAME"
       essential = true
       portMappings = [{
         containerPort = each.value.port
@@ -39,19 +37,13 @@ resource "aws_ecs_service" "service" {
   task_definition = aws_ecs_task_definition.task[each.key].arn
   desired_count   = var.desired_count
   launch_type     = "FARGATE"
-  
- # force_new_deployment = true  
 
   #################################
   # REQUIRED FOR CODEDEPLOY
   #################################
-    deployment_controller {
-      type = "CODE_DEPLOY"
-   }
-
-  #  deployment_controller {
-  #  type = "ECS"   # ✅ THIS IS THE FIX
-  #}
+  deployment_controller {
+    type = "CODE_DEPLOY"
+  }
 
   #################################
   # NETWORK CONFIGURATION
@@ -63,12 +55,10 @@ resource "aws_ecs_service" "service" {
   }
 
   #################################
-  # LOAD BALANCER
+  # REQUIRED: INITIAL ALB ATTACHMENT
   #################################
   load_balancer {
-    # target_group_arn = aws_lb_target_group.tg[each.key].arn
-      target_group_arn = aws_lb_target_group.blue[each.key].arn
-
+    target_group_arn = aws_lb_target_group.blue[each.key].arn
     container_name   = each.key
     container_port   = each.value.port
   }
@@ -77,19 +67,17 @@ resource "aws_ecs_service" "service" {
   # CODEDEPLOY CONTROLS DEPLOYMENT
   #################################
   lifecycle {
-  ignore_changes = [
-    task_definition,
-    desired_count,
-    load_balancer
+    ignore_changes = [
+      task_definition,
+      desired_count,
+      load_balancer
     ]
   }
 
-
- depends_on = [
-  aws_lb_listener.prod,
-  aws_lb_listener.test
- ]
-
+  depends_on = [
+    aws_lb_listener.prod,
+    aws_lb_listener.test
+  ]
 
   tags = var.tags
 }

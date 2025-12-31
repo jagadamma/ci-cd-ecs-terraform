@@ -109,49 +109,49 @@ vpc_flow_logs = {
 
 
 
-multi_domain_cert = {
-  domain_name = "posistrength.ae"
+# multi_domain_cert = {
+#   domain_name = "posistrength.ae"
 
-  subject_alternative_names = [
-    "dev.posistrength.ae",
-    "www.dev.posistrength.ae"
-  ]
-}
+#   subject_alternative_names = [
+#     "dev.posistrength.ae",
+#     "www.dev.posistrength.ae"
+#   ]
+# }
 
 
-validation_method = "DNS"
+# validation_method = "DNS"
 
-hosted_zones = {
-  "posistrength.ae" = {
-    comment       = "Production public domain"
-    force_destroy = false
-    private_zone  = false
-  }
+# hosted_zones = {
+#   "posistrength.ae" = {
+#     comment       = "Production public domain"
+#     force_destroy = false
+#     private_zone  = false
+#   }
 
-  #"alekya.com" = {
-  #  comment       = "Secondary public domain"
-  #  force_destroy = true
-  #  private_zone  = false
-  #}
-}
+#   #"alekya.com" = {
+#   #  comment       = "Secondary public domain"
+#   #  force_destroy = true
+#   #  private_zone  = false
+#   #}
+# }
 
-records = {
-  dev_a = {
-    zone_name = "posistrength.ae"
-    name      = "dev.posistrength.ae"
-    type      = "A"
-    ttl       = 300
-    records   = ["10.0.0.10"] # your server IP
-  }
+# records = {
+#   dev_a = {
+#     zone_name = "posistrength.ae"
+#     name      = "dev.posistrength.ae"
+#     type      = "A"
+#     ttl       = 300
+#     records   = ["10.0.0.10"] # your server IP
+#   }
 
-  www_dev_cname = {
-    zone_name = "posistrength.ae"
-    name      = "www.dev.posistrength.ae"
-    type      = "CNAME"
-    ttl       = 300
-    records   = ["dev.posistrength.ae"]
-  }
-}
+#   www_dev_cname = {
+#     zone_name = "posistrength.ae"
+#     name      = "www.dev.posistrength.ae"
+#     type      = "CNAME"
+#     ttl       = 300
+#     records   = ["dev.posistrength.ae"]
+#   }
+# }
 
 
 
@@ -172,37 +172,37 @@ records = {
 ##  "posistrength.com"
 #]
 
-rds = {
-  mysql = {
-    name              = "posistrength-dev-mysql-db"
-    db_identifier     = "mysql-db"
-    instance_class    = "db.t3.medium"
-    allocated_storage = 30
-    engine            = "mysql"
-    engine_version    = "8.0.43"
-    db_name           = "posidevmysqldb"
-    #db_username                           = "mysqladmin"
-    db_sg_name                            = "posistrength-dev-mysql-sg"
-    subnet_group_name                     = "posistrength-dev-mysql-subnet-group"
-    kms_key_name                          = "posistrength-dev-mysql-kms-key"
-    parameter_group_name                  = "posistrength-dev-mysql-parmater-group"
-    parameter_group_family                = "mysql8.0"
-    auto_minor_version_upgrade            = true
-    backup_retention_period               = 7
-    port                                  = 3306
-    copy_tags_to_snapshot                 = true
-    performance_insights_enabled          = true
-    performance_insights_retention_period = 7
-    multi_az                              = false
-    publicly_accessible                   = false
-    skip_final_snapshot                   = true
-    storage_encrypted                     = true
-    storage_type                          = "gp3"
-    deletion_protection                   = true
-    #db_name                               = "mysql"
-    db_username = "admin"
-  }
-}
+# rds = {
+#   mysql = {
+#     name              = "posistrength-dev-mysql-db"
+#     db_identifier     = "mysql-db"
+#     instance_class    = "db.t3.medium"
+#     allocated_storage = 30
+#     engine            = "mysql"
+#     engine_version    = "8.0.43"
+#     db_name           = "posidevmysqldb"
+#     #db_username                           = "mysqladmin"
+#     db_sg_name                            = "posistrength-dev-mysql-sg"
+#     subnet_group_name                     = "posistrength-dev-mysql-subnet-group"
+#     kms_key_name                          = "posistrength-dev-mysql-kms-key"
+#     parameter_group_name                  = "posistrength-dev-mysql-parmater-group"
+#     parameter_group_family                = "mysql8.0"
+#     auto_minor_version_upgrade            = true
+#     backup_retention_period               = 7
+#     port                                  = 3306
+#     copy_tags_to_snapshot                 = true
+#     performance_insights_enabled          = true
+#     performance_insights_retention_period = 7
+#     multi_az                              = false
+#     publicly_accessible                   = false
+#     skip_final_snapshot                   = true
+#     storage_encrypted                     = true
+#     storage_type                          = "gp3"
+#     deletion_protection                   = true
+#     #db_name                               = "mysql"
+#     db_username = "admin"
+#   }
+# }
 
 
 # sns = {
@@ -286,13 +286,6 @@ ecr_repositories = [
     tag_mutability    = "MUTABLE"
     enable_encryption = true
     enable_lifecycle  = true
-  },
-  {
-    name              = "posistrength-dev-ecr1"
-    enable_scanning   = true
-    tag_mutability    = "MUTABLE"
-    enable_encryption = true
-    enable_lifecycle  = true
   }
 ]
 
@@ -330,7 +323,7 @@ vpc_endpoint_sg_egress = [
 ########################################################################################################
 
 ecs = {
-  container_image = "132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1:v2"
+  #container_image = "132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1:v2"
   container_port  = 80
   container_name  = "app1"
 
@@ -395,8 +388,8 @@ task_definition = {
   app1 = {
 
 
-    image  = "132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1:v2"
-#              132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1
+    image  =    null
+      #         "132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1:v2"
     port   = 80
     cpu    = 256
     memory = 512
@@ -421,12 +414,10 @@ listener_protocol = "HTTP"
 #listener_port = 80
 
 
-
-
 ################################
 # ALB
 ################################
-listener_port = 80
+# listener_port = 80
 
 ################################
 # HEALTH CHECK
@@ -481,7 +472,7 @@ cicd = {
 
 service_ecr_map = {
   app1 = "posistrength-dev-webposistrength-ecr"
-  app2 = "posistrength-dev-ecr1"
+  #app2 = "posistrength-dev-ecr1"
 }
 
 ########################################################################################################

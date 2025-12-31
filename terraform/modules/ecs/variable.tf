@@ -23,6 +23,12 @@ variable "desired_count" {
   type = number
 }
 
+# variable "default_task_image" {
+#   type    = string
+#   default = null
+# }
+
+
 variable "alb_idle_timeout" {
   type = number
 }
@@ -56,7 +62,7 @@ variable "execution_role_arn" {
 # Multi-service ECS Task Definition List
 variable "task_definition" {
   type = map(object({
-    image  = string
+    image  = optional(string)
     port   = number
     cpu    = number
     memory = number

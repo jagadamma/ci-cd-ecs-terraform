@@ -98,7 +98,7 @@ module "ecs" {
   vpc_id                 = module.vpc.vpc_ids[0]
   private_subnet_ids     = module.subnet.private_subnet_ids
   public_subnet_ids      = module.subnet.public_subnet_ids
-
+ 
   desired_count          = var.ecs.desired_count
   alb_idle_timeout       = var.ecs.alb_idle_timeout
   assign_public_ip       = var.ecs.assign_public_ip
@@ -191,7 +191,8 @@ resource "aws_codedeploy_app" "ecs" {
     ecs_service_name = module.ecs.service_names[each.key]
  
     alb_listener_arn = module.ecs.alb_listener_arn
-    #  alb_test_listener_arn = module.ecs.alb_test_listener_arn
+    alb_test_listener_arn = module.ecs.alb_test_listener_arn
+
     blue_tg_name     = module.ecs.blue_tg_names[each.key]
     green_tg_name    = module.ecs.green_tg_names[each.key]
  
@@ -220,8 +221,8 @@ resource "aws_codedeploy_app" "ecs" {
     codebuild_project_name = module.codebuild[each.key].project_name
     codedeploy_app_name    = module.codedeploy[each.key].app_name
     codedeploy_dg_name     = module.codedeploy[each.key].dg_name
-    taskdef_template_path  = "taskdef-${each.key}.json"
-    appspec_template_path  = "appspec-${each.key}.yaml"
+    # taskdef_template_path  = "taskdef-${each.key}.json"
+    # appspec_template_path  = "appspec-${each.key}.yaml"
     #    container_name         = var.ecs.container_name
 
  

@@ -43,15 +43,15 @@ variable "codestar_connection_arn" {
 #  sensitive = true
 #}
 
-variable "taskdef_template_path" {
-  type        = string
-  description = "Task definition template file path"
-}
+# variable "taskdef_template_path" {
+#   type        = string
+#   description = "Task definition template file path"
+# }
 
 
-variable "appspec_template_path" {
-  type = string
-}
+# variable "appspec_template_path" {
+#   type = string
+# }
 
 
 variable "codebuild_project_name" {

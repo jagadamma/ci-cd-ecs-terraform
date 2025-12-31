@@ -32,3 +32,8 @@ variable "green_tg_name" {
 variable "codedeploy_app_name" {
   type = string
 }
+
+variable "alb_test_listener_arn" {
+  description = "ALB test listener ARN for ECS blue/green deployment"
+  type        = string
+}

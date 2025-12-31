@@ -72,13 +72,16 @@ resource "aws_codepipeline" "this" {
         # ✅ Automatically taken from GitHub build artifact
         TaskDefinitionTemplateArtifact = "build_output"
         #  TaskDefinitionTemplatePath     = each.key == "app1" ? "taskdef.json" : "taskdef-app2.json"
-        TaskDefinitionTemplatePath     = var.taskdef_template_path
+        #TaskDefinitionTemplatePath     = var.taskdef_template_path
+        TaskDefinitionTemplatePath     = "taskdef-app1.json"
+
         AppSpecTemplateArtifact        = "build_output"
         #   AppSpecTemplatePath            = "appspec-${var.service_name}.yaml"
-        AppSpecTemplatePath = var.appspec_template_path
+        # AppSpecTemplatePath =   var.appspec_template_path
+        AppSpecTemplatePath            = "appspec-app1.yaml"
                               
-        Image1ArtifactName  = "build_output"
-        Image1ContainerName =  "app1"
+        #  Image1ArtifactName  = "build_output"
+        #  Image1ContainerName =  "app1"
       }
     }
   }
