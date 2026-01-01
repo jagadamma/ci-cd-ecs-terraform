@@ -1,6 +1,6 @@
 environment = "dev"
 region      = "ap-southeast-1"
-name_prefix = "posistrength-dev"
+name_prefix = "posistrength"
 
 common_tags = {
   Terraformed = "True"
@@ -324,8 +324,8 @@ vpc_endpoint_sg_egress = [
 
 ecs = {
   #container_image = "132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1:v2"
-  container_port  = 80
-  container_name  = "app1"
+  container_port = 80
+  container_name = "app1"
 
   task_cpu         = 256
   task_memory      = 512
@@ -343,7 +343,7 @@ security_groups = {
         protocol    = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
       },
-     
+
       {
         from_port   = 9000
         to_port     = 9000
@@ -385,11 +385,11 @@ security_groups = {
 }
 
 task_definition = {
-  app1 = {
+  posistrength_psspl = {
 
 
-    image  =    null
-      #         "132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1:v2"
+    image = null
+    #         "132398229882.dkr.ecr.ap-southeast-1.amazonaws.com/posistrength-dev-ecr1:v2"
     port   = 80
     cpu    = 256
     memory = 512
@@ -442,47 +442,53 @@ traffic_weights = {
 
 
 cicd = {
-  pipeline_name   = "posistrength-dev-pipeline"
-  artifact_bucket = "posistrength-dev-codepipeline-artifacts"
+  pipeline_name = "posistrength-dev-pipeline"
+  #artifact_bucket = "posistrength-dev-codepipeline-artifacts"
+  artifact_bucket_key = "codepipeline_artifacts"
+
 
   github = {
-    owner          = "jagadamma"
-    repo           = "nginx-dockerdile-deployment"
-    branch         = "master"
-    connection_arn = "arn:aws:codeconnections:ap-southeast-1:132398229882:connection/60b01002-1ca3-46b6-bcf3-5645b7992d12"
-
+    owner          = "Posistrength-PSSPL"
+    repo           = "webposistrength"
+    branch         = "test"
+    connection_arn = "arn:aws:codeconnections:ap-south-1:058841532330:connection/a236e4f0-040e-42ea-b6c8-b9f864e09897"
   }
 
   codebuild = {
-    project_name = "posistrength-dev-codebuild"
+    project_name = "codebuild"
     image        = "aws/codebuild/standard:7.0"
     compute_type = "BUILD_GENERAL1_SMALL"
     image_tag    = "v2"
   }
 
   codedeploy = {
-    application_name = "posistrength-dev-ecs-app"
+    application_name = "posistrength-dev-psspl"
     deployment_groups = {
-      app1 = { name = "posistrength-dev-app1-dg" }
-      app2 = { name = "posistrength-dev-app2-dg" }
+      posistrength_psspl = { name = "dg" }
+      #app2 = { name = "posistrength-dev-app2-dg" }
     }
   }
 }
+
+
 # artifact_bucket ="posistrength-dev-codepipeline-artifacts"
 
 service_ecr_map = {
-  app1 = "posistrength-dev-webposistrength-ecr"
+  posistrength_psspl = "posistrength-dev-webposistrength-ecr"
   #app2 = "posistrength-dev-ecr1"
 }
 
 ########################################################################################################
 
 
-s3bucketslist = [
-  {
-    bucket_name   = "posistrength-dev-codepipeline-artifacts"
+
+s3bucketslist = {
+  codepipeline_artifacts = {
+    bucket_name   = "posistrength-ppsl-dev-artifacts11"
     force_destroy = true
-    versioning    = true
+    versioning    = false
     public_access = false
   }
-]
+}
+
+

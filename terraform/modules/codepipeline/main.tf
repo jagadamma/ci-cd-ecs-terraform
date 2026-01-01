@@ -1,5 +1,7 @@
 resource "aws_codepipeline" "this" {
-  name     = "${var.name_prefix}-${var.environment}-${var.pipeline_name}"
+#  name     = "${var.name_prefix}-${var.environment}-${var.pipeline_name}"
+  name = var.pipeline_name
+
   role_arn = var.role_arn
 
   artifact_store {

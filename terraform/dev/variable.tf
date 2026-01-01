@@ -163,7 +163,7 @@ variable "nat_gateways" {
 # -----------------------------
 variable "ecs" {
   type = object({
-    container_image = optional(string)
+    container_image  = optional(string)
     container_port   = number
     task_cpu         = number
     task_memory      = number
@@ -435,7 +435,7 @@ variable "traffic_weights" {
 # S3 Inputs
 # -----------------------------
 variable "s3bucketslist" {
-  type = list(object({
+  type = map(object({
     bucket_name   = string
     force_destroy = bool
     versioning    = bool
@@ -443,37 +443,41 @@ variable "s3bucketslist" {
   }))
 }
 
+
+
 # variable "artifact_bucket" {
 #  description = "S3 bucket used by CodePipeline and CodeBuild for artifacts"
 #  type        = string
 # }
 
-   variable "cicd" {
-    description = "CI/CD configuration"
-    type = object({
-      pipeline_name   = string
-      artifact_bucket = string
- 
-      github = object({
-        owner          = string
-        repo           = string
-        branch         = string
-        connection_arn = string
-        #  token          = string
-      })
- 
-      codebuild = optional(object({
-        project_name = string
-        image        = string
-        compute_type = string
-        image_tag    = string 
-      }))
- 
-       codedeploy = optional(object({
-         application_name = string
-         deployment_groups = map(object({
-           name = string
-         }))
-      }))
+variable "cicd" {
+  description = "CI/CD configuration"
+  type = object({
+    pipeline_name = string
+    #      artifact_bucket = string
+    artifact_bucket_key = string
+
+
+    github = object({
+      owner          = string
+      repo           = string
+      branch         = string
+      connection_arn = string
+      #  token          = string
     })
-  }
+
+    codebuild = optional(object({
+      project_name = string
+      image        = string
+      compute_type = string
+      image_tag    = string
+    }))
+
+    codedeploy = optional(object({
+      application_name = string
+      deployment_groups = map(object({
+        name = string
+      }))
+    }))
+  })
+}

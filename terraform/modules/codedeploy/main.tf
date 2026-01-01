@@ -7,7 +7,9 @@ resource "aws_codedeploy_deployment_group" "ecs" {
   app_name              = var.codedeploy_app_name
   #  app_name = aws_codedeploy_app.ecs.name
 
-  deployment_group_name = "${var.name_prefix}-${var.environment}-${var.ecs_service_name}-dg"
+  # deployment_group_name = "${var.ecs_service_name}-${var.environment}-dg"
+  deployment_group_name = "${replace(var.ecs_service_name, "-service", "")}-${var.environment}-dg"
+
   service_role_arn      = var.service_role_arn
 
   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"

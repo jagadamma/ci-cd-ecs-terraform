@@ -24,7 +24,7 @@ resource "aws_lb" "alb" {
 resource "aws_lb_target_group" "blue" {
   for_each = var.task_definition
 
-  name        = "${each.key}-blue-tg"
+  name        = "${replace(each.key, "_", "-")}-blue-tg"
   port        = each.value.port
   #  protocol    = var.listener_protocol
   protocol = var.health_check.protocol
@@ -51,7 +51,7 @@ resource "aws_lb_target_group" "blue" {
 resource "aws_lb_target_group" "green" {
   for_each = var.task_definition
 
-  name        = "${each.key}-green-tg"
+  name        = "${replace(each.key, "_", "-")}-green-tg"
   port        = each.value.port
 #  protocol    = var.listener_protocol
   protocol = var.health_check.protocol

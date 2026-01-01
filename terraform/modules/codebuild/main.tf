@@ -1,5 +1,7 @@
 resource "aws_codebuild_project" "this" {
-  name         = "${var.project_name}-${var.service_name}"
+  #  name         = "${var.project_name}-${var.service_name}"
+  name = var.project_name
+
   service_role = var.service_role
 
   artifacts {
